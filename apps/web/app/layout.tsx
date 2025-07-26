@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,10 +23,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} bg-[#0a0e14] text-white`}>
         {children}
+        <Toaster richColors/>
       </body>
     </html>
   );
