@@ -1,0 +1,100 @@
+"use client";
+
+import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Button } from "../ui/button";
+import { Copy, DownloadIcon, QrCode, Share2 } from "lucide-react";
+import { Input } from "../ui/input";
+import { toast } from "sonner";
+
+export default function ReceiveToken() {
+  const walletAddress = "7xXtg2CW87d97TXJSDpbD5jBkeTqA83TZRuJosgAs";
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-gray-700 bg-transparent text-white hover:bg-[#c1f94c] hover:text-black transition-colors">
+          <DownloadIcon className="w-4 h-4" />
+          Receive
+        </button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-[420px] px-6 py-5 rounded-xl bg-[#0a0e14] text-white border border-gray-700">
+        <DialogHeader>
+          <DialogTitle className="text-lg flex items-center gap-2 font-semibold">
+            <QrCode className="w-5 h-5 text-purple-400" />
+            Receive SOL
+          </DialogTitle>
+          <p className="text-sm text-muted-foreground text-gray-400 mt-1">
+            Share this address to receive Solana
+          </p>
+        </DialogHeader>
+
+        <div className="w-full h-44 border-2 border-dashed border-gray-700 rounded-md flex flex-col items-center justify-center mt-6">
+          <QrCode className="text-gray-600 w-8 h-8 mb-2" />
+          <span className="text-gray-500 text-sm text-center leading-tight">
+            QR Code
+            <br />
+            Would generate here
+          </span>
+          {/* <Image
+            src={QrImage}
+            alt="QR"
+            className="max-h-full max-w-full object-contain"
+          /> */}
+        </div>
+
+        <div className="mt-5 w-full">
+          <label className="text-sm block text-gray-400 mb-2">
+            Wallet Address
+          </label>
+          <div className="flex items-center gap-2">
+            <Input
+              className="flex-1 bg-zinc-900 text-white border border-gray-700 text-sm px-3 py-2"
+              value={walletAddress}
+              readOnly
+              disabled
+            />
+          </div>
+        </div>
+
+        <div className="mt-4 bg-[#232217] text-yellow-300 text-xs border-yellow-600/70 border-1 p-3 rounded-lg leading-relaxed">
+          <span className="font-semibold">Important:</span> Only send SOL to
+          this address on the Solana network. Sending tokens from other networks
+          may result in permanent loss.
+        </div>
+
+        <div className="mt-5 flex flex-row gap-3">
+          <Button
+            size={"lg"}
+            variant={"outline"}
+            className="w-1/2 cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
+            onClick={()=>{
+                // handleCopy();
+                toast.success("Address Copied",{
+                    description:"Wallet address copied to clipboard"
+                });
+            }}
+          >
+            <Copy size={16} className="mr-2" />
+            Copy Address
+          </Button>
+          <Button
+            variant="outline"
+            size={"lg"}
+            className="w-1/2 cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
+          >
+            <Share2 size={16} className="mr-2" />
+            Share
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
