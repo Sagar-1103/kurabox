@@ -2,18 +2,23 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Key, Copy, Check, Eye, EyeOff } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { saveSeedPhrase } from "utils/storage";
+import {generateMnemonic} from "bip39";
 
 export default function Done() {
   const [acknowledged, setAcknowledged] = useState(false);
-  const [secretPhrase, setSecretPhrase] = useState(
-    "The quick brown fox jumps over the lazy dog now and then The quick brown fox jumps over the lazy dog now and then"
-  );
+  const [secretPhrase, setSecretPhrase] = useState("");
   const [copied, setCopied] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
   const router = useRouter();
+  const mnemonics = generateMnemonic();
+
+  useEffect(()=>{
+    setSecretPhrase(mnemonics);
+  },[])
 
   const handleCopy = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -133,7 +138,8 @@ export default function Done() {
 
       <Button
         disabled={!acknowledged}
-        onClick={() => {
+        onClick={async() => {
+          await saveSeedPhrase(secretPhrase);
           router.replace("/wallet");
           toast.success("Wallet created successfully", {
             description: "Your multi-chain wallet is ready to use.",

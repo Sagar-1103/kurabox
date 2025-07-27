@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { saveSeedPhrase } from "utils/storage";
 
 export default function ExistingWallet() {
   const [wordCount, setWordCount] = useState<12 | 24>(12);
@@ -103,8 +104,9 @@ export default function ExistingWallet() {
 
       <Button
         disabled={seedWords.slice(0, wordCount).some((w) => !w)}
-        onClick={() => {
-          console.log(seedWords.join(" "));
+        onClick={async() => {
+          const seedPhrase = seedWords.join(" ");
+          await saveSeedPhrase(seedPhrase);
           router.replace("/wallet");
           toast.success("Wallet created successfully", {
             description: "Your multi-chain wallet is ready to use.",

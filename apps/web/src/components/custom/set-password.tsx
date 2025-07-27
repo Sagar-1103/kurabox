@@ -5,6 +5,7 @@ import { Key } from "lucide-react";
 import { Button } from "../ui/button";
 import { ActionTypes } from "app/onboard/page";
 import { toast } from "sonner";
+import { savePassword } from "utils/storage";
 
 interface SetPasswordProps {
   setAction: (action: ActionTypes) => void;
@@ -52,8 +53,9 @@ export default function SetPassword({ setAction }: SetPasswordProps) {
 
       <Button
         disabled={password.length < 6 || password !== confirmPassword}
-        onClick={() => {
+        onClick={async() => {
           setAction("new");
+          await savePassword(password);
           toast.success("Password has been set successfully", {
             description: "Your password is now active for your wallet.",
           });

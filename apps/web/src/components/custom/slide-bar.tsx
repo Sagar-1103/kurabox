@@ -8,13 +8,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { ArrowRight, Lock, Plus, Settings, X } from "lucide-react";
+import {
+  ArrowRight,
+  LucideLogOut,
+  Plus,
+  Settings,
+} from "lucide-react";
+import { deletePassword, deleteSeedPhrase } from "utils/storage";
+import { useRouter } from "next/navigation";
 
 interface SlidebarProps {
   accounts: { id: number }[];
   setAccounts: (account: { id: number }[]) => void;
-  selectedAccountId: number ;
-  setSelectedAccountId: (accountId: number ) => void;
+  selectedAccountId: number;
+  setSelectedAccountId: (accountId: number) => void;
 }
 
 export default function Slidebar({
@@ -23,12 +30,13 @@ export default function Slidebar({
   selectedAccountId,
   setSelectedAccountId,
 }: SlidebarProps) {
-
-  const addAccounts = () =>{
+  const addAccounts = () => {
     const newAccounts = [...accounts];
-    newAccounts.push({id:accounts.length+1});
+    newAccounts.push({ id: accounts.length + 1 });
     setAccounts(newAccounts);
-  }
+  };
+
+  const router = useRouter();
 
   return (
     <>
@@ -40,7 +48,7 @@ export default function Slidebar({
         </SheetTrigger>
         <SheetContent className="border-gray-700/80 bg-[#0a0e14] w-fit border-1 mr-5 my-5 rounded-lg h-[95%]">
           <SheetClose asChild>
-            <button className="w-10 mt-3 mx-2.5 justify-items-center py-2 text-gray-500 hover:bg-white p-2 rounded-lg hover:text-black">
+            <button className="w-10 mt-3 mx-2.5 cursor-pointer justify-items-center py-2 text-gray-500 hover:bg-white p-2 rounded-lg hover:text-black">
               <ArrowRight className="h-5 w-5" />
             </button>
           </SheetClose>
@@ -51,7 +59,7 @@ export default function Slidebar({
             {accounts.map((account) => (
               <div key={account.id} className=" p-2 rounded-lg shadow-md mx-1">
                 <Avatar
-                onClick={()=>setSelectedAccountId(account.id)}
+                  onClick={() => setSelectedAccountId(account.id)}
                   className={`rounded-lg hover:bg-[#c1f94c] hover:text-black ${selectedAccountId === account.id ? "bg-[#c1f94c] text-black" : "bg-gray-700 text-white"} w-10 h-10 my-1 m-auto cursor-pointer font-semibold `}
                 >
                   <AvatarFallback>A{account.id}</AvatarFallback>
@@ -63,16 +71,26 @@ export default function Slidebar({
           <div className="absolute bottom-4 w-full flex flex-col items-center space-y-3">
             <div className="h-[1px] w-[75%] bg-gray-600" />
 
-            <button onClick={addAccounts} className="text-white p-2 hover:bg-white rounded-md hover:text-black transition-all duration-200">
+            <button
+              onClick={addAccounts}
+              className="text-white p-2 hover:bg-white cursor-pointer rounded-md hover:text-black transition-all duration-200"
+            >
               <Plus className="w-6 h-6" />
             </button>
 
-            <button className="text-white p-2 hover:bg-white rounded-md hover:text-black transition-all duration-200">
+            <button className="text-white p-2 hover:bg-white cursor-pointer rounded-md hover:text-black transition-all duration-200">
               <Settings className="w-6 h-6" />
             </button>
 
-            <button className="text-white p-2 hover:bg-white rounded-md hover:text-black transition-all duration-200">
-              <Lock className="w-6 h-6" />
+            <button
+              onClick={() => {
+                deleteSeedPhrase();
+                deletePassword();
+                router.replace("/");
+              }}
+              className="text-white p-2 hover:bg-red-600 cursor-pointer rounded-md hover:text-white transition-all duration-200"
+            >
+              <LucideLogOut className="w-6 h-6" />
             </button>
           </div>
         </SheetContent>
