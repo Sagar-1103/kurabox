@@ -1,14 +1,23 @@
+"use client";
 import { Key } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function ExistingWallet() {
   const [wordCount, setWordCount] = useState<12 | 24>(12);
   const [seedWords, setSeedWords] = useState<string[]>(Array(24).fill(""));
+  const router = useRouter();
 
   const handleInputChange = (index: number, value: string) => {
+    const wordIndex = index+1;
+    let updatedValue = value.split(`${wordIndex}.  `)[1];
+    if (!updatedValue) {
+      updatedValue="";
+    };
     const newWords = [...seedWords];
-    newWords[index] = value.trim();
+    newWords[index] = updatedValue.trim();
     setSeedWords(newWords);
   };
 
@@ -22,10 +31,6 @@ export default function ExistingWallet() {
     });
     setSeedWords(newWords);
   };
-
-  const handleSubmit = ()=>{
-    console.log(seedWords.join(" "));
-  }
 
   return (
     <div className="w-full mx-auto -mt-2 space-y-6">
@@ -51,7 +56,11 @@ export default function ExistingWallet() {
                 ? "bg-[#b8ff4c] text-black"
                 : "bg-[#151c29] text-white"
             }`}
-            onClick={() => setWordCount(12)}
+            onClick={() => {
+              setWordCount(12);
+              const arr = Array(24).fill("");
+              setSeedWords(arr);
+            }}
           >
             12 Words
           </Button>
@@ -62,7 +71,11 @@ export default function ExistingWallet() {
                 ? "bg-[#b8ff4c] text-black"
                 : "bg-[#151c29] text-white"
             }`}
-            onClick={() => setWordCount(24)}
+            onClick={() => {
+              setWordCount(24);
+              const arr = Array(24).fill("");
+              setSeedWords(arr);
+            }}
           >
             24 Words
           </Button>
@@ -73,11 +86,11 @@ export default function ExistingWallet() {
         {Array.from({ length: wordCount }, (_, index) => (
           <div key={index} className="flex flex-row">
             <input
+              key={index}
               type="text"
-              placeholder={`Word ${index + 1}`}
-              value={seedWords[index] || ""}
-              onChange={(e) => handleInputChange(index, e.target.value)}
+              value={`${index + 1}.  ${seedWords[index]}` || ""}
               onPaste={handlePaste}
+              onChange={(e) => handleInputChange(index, e.target.value)}
               className="w-full p-2 rounded-md bg-[#151c29] border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#b8ff4c]"
             />
           </div>
@@ -90,7 +103,13 @@ export default function ExistingWallet() {
 
       <Button
         disabled={seedWords.slice(0, wordCount).some((w) => !w)}
-        onClick={handleSubmit}
+        onClick={() => {
+          console.log(seedWords.join(" "));
+          router.replace("/wallet");
+          toast.success("Wallet created successfully", {
+            description: "Your multi-chain wallet is ready to use.",
+          });
+        }}
         className="w-full bg-gradient-to-r from-[#c1f94c] to-[#fcd44c] text-black py-3 text-md font-medium"
       >
         Import Wallet

@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Key, Copy, Check, Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function Done() {
   const [acknowledged, setAcknowledged] = useState(false);
@@ -12,6 +13,7 @@ export default function Done() {
   );
   const [copied, setCopied] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
+  const router = useRouter();
 
   const handleCopy = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -132,6 +134,7 @@ export default function Done() {
       <Button
         disabled={!acknowledged}
         onClick={() => {
+          router.replace("/wallet");
           toast.success("Wallet created successfully", {
             description: "Your multi-chain wallet is ready to use.",
           });
