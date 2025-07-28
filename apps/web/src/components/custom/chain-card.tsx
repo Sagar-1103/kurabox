@@ -1,53 +1,16 @@
-import { Check, CopyIcon, Link, SendIcon } from "lucide-react";
+import { Check, CopyIcon, DownloadIcon, Link, SendIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import ReceiveToken from "./receive-token";
 import { Token } from "utils/walletUtils";
 import { toast } from "sonner";
-import axios from "axios";
 
 interface ChainCardProps {
   token: Token;
+  balance:number;
 }
 
-export default function ChainCard({ token }: ChainCardProps) {
+export default function ChainCard({ token,balance }: ChainCardProps) {
   const [copied, setCopied] = useState(false);
-  const [balance, setBalance] = useState(0);
-  const getBalance = async () => {
-    try {
-      const url = `https://${token.chain === "solana" ? "solana" : token.chain === "ethereum" ? "eth" : "polygon"}-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`;
-      const method = token.chain === "solana" ? "getBalance" : "eth_getBalance";
-      const response = await axios.post(url, {
-        jsonrpc: "2.0",
-        id: 1,
-        method,
-        params:
-          token.chain === "solana"
-            ? [token.publicKey]
-            : [token.publicKey, "latest"],
-      });
-
-      const res = await response.data;
-      const balanceInHex =
-        token.chain === "solana" ? res.result.value : res.result;
-
-      const bal = BigInt(balanceInHex);
-
-      if (token.chain === "polygon" || token.chain === "ethereum") {
-        const divisor = BigInt("1000000000000000000");
-        setBalance(Number(bal) / Number(divisor));
-      }
-      if (token.chain === "solana") {
-        const divisor = BigInt("1000000000");
-        setBalance(Number(BigInt(balanceInHex)) / Number(divisor));
-      }
-    } catch (error) {
-      console.log("Error fetching balance for ", token.chain, ": ", error);
-    }
-  };
-
-  useEffect(() => {
-    getBalance();
-  }, []);
 
   const handleCopy = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -124,10 +87,6 @@ export default function ChainCard({ token }: ChainCardProps) {
             {balance} {token?.chain.slice(0, 3).toUpperCase()}
           </span>
         </div>
-        <div className="flex justify-between text-sm mt-1">
-          <span className="text-gray-400">USD Value</span>
-          <span className="text-green-400 font-semibold">$2,456.78</span>
-        </div>
       </div>
 
       <div className="border-t border-[#1f1f1f] my-4" />
@@ -139,7 +98,7 @@ export default function ChainCard({ token }: ChainCardProps) {
         >
           {copied ? (
             <>
-              <Check className="w-4 h-4" /> Copied
+              <Check className="w-4 h-4 text-green-400" /> Copied
             </>
           ) : (
             <>
@@ -153,7 +112,12 @@ export default function ChainCard({ token }: ChainCardProps) {
         <button className="flex items-center justify-center gap-2 hover:bg-[#c1f94c] hover:text-black py-2 rounded-lg border border-gray-700 transition">
           <SendIcon className="w-4 h-4" /> Send
         </button>
-        <ReceiveToken publicAddress={token.publicKey} handleCopy={handleCopy} />
+
+        <ReceiveToken chain={token.chain} publicAddress={token.publicKey} handleCopy={handleCopy}>
+          <button className="flex items-center justify-center gap-2 hover:bg-[#c1f94c] hover:text-black py-2 rounded-lg border border-gray-700 transition">
+            <DownloadIcon className="w-4 h-4" /> Receive
+          </button>
+        </ReceiveToken>
       </div>
     </div>
   );

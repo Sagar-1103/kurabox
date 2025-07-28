@@ -9,35 +9,37 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { Copy, DownloadIcon, QrCode, Share2 } from "lucide-react";
+import { Copy, QrCode, Share2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { useQRCode } from "next-qrcode";
-
+import { Chain } from "utils/walletUtils";
 interface ReceiveTokenProps {
   publicAddress: string;
-  handleCopy:()=>void;
+  chain:Chain;
+  handleCopy: () => void;
+  children: React.ReactNode;
 }
 
-export default function ReceiveToken({ publicAddress,handleCopy }: ReceiveTokenProps) {
+export default function ReceiveToken({
+  publicAddress,
+  handleCopy,
+  children,
+  chain,
+}: ReceiveTokenProps) {
   const { SVG } = useQRCode();
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-gray-700 bg-transparent text-white hover:bg-[#c1f94c] hover:text-black transition-colors">
-          <DownloadIcon className="w-4 h-4" />
-          Receive
-        </button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
 
       <DialogContent className="sm:max-w-[420px] px-6 py-5 rounded-xl bg-[#0a0e14] text-white border border-gray-700">
         <DialogHeader>
           <DialogTitle className="text-lg flex items-center gap-2 font-semibold">
             <QrCode className="w-5 h-5 text-purple-400" />
-            Receive SOL
+            Receive {chain.slice(0,1).toUpperCase()+chain.slice(1,)}
           </DialogTitle>
           <p className="text-sm text-muted-foreground text-gray-400 mt-1">
-            Share this address to receive Solana
+            Share this address to receive {chain}
           </p>
         </DialogHeader>
 
