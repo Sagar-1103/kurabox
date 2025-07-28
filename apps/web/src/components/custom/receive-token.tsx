@@ -11,10 +11,15 @@ import {
 import { Button } from "../ui/button";
 import { Copy, DownloadIcon, QrCode, Share2 } from "lucide-react";
 import { Input } from "../ui/input";
-import { toast } from "sonner";
+import { useQRCode } from "next-qrcode";
 
-export default function ReceiveToken() {
-  const walletAddress = "7xXtg2CW87d97TXJSDpbD5jBkeTqA83TZRuJosgAs";
+interface ReceiveTokenProps {
+  publicAddress: string;
+  handleCopy:()=>void;
+}
+
+export default function ReceiveToken({ publicAddress,handleCopy }: ReceiveTokenProps) {
+  const { SVG } = useQRCode();
 
   return (
     <Dialog>
@@ -36,18 +41,29 @@ export default function ReceiveToken() {
           </p>
         </DialogHeader>
 
-        <div className="w-full h-44 border-2 border-dashed border-gray-700 rounded-md flex flex-col items-center justify-center mt-6">
-          <QrCode className="text-gray-600 w-8 h-8 mb-2" />
-          <span className="text-gray-500 text-sm text-center leading-tight">
-            QR Code
-            <br />
-            Would generate here
-          </span>
-          {/* <Image
-            src={QrImage}
-            alt="QR"
-            className="max-h-full max-w-full object-contain"
-          /> */}
+        <div className="w-[220px] h-[220px] mx-auto border-2 border-dashed border-gray-700 rounded-md flex flex-col items-center justify-center mt-6">
+          {!publicAddress ? (
+            <>
+              <QrCode className="text-gray-600 w-8 h-8 mb-2" />
+              <span className="text-gray-500 text-sm text-center leading-tight">
+                QR Code
+                <br />
+                Would generate here
+              </span>
+            </>
+          ) : (
+            <SVG
+              text={publicAddress}
+              options={{
+                margin: 2,
+                width: 200,
+                color: {
+                  dark: "#000000ff",
+                  light: "#ffffffff",
+                },
+              }}
+            />
+          )}
         </div>
 
         <div className="mt-5 w-full">
@@ -57,7 +73,7 @@ export default function ReceiveToken() {
           <div className="flex items-center gap-2">
             <Input
               className="flex-1 bg-zinc-900 text-white border border-gray-700 text-sm px-3 py-2"
-              value={walletAddress}
+              value={publicAddress}
               readOnly
               disabled
             />
@@ -75,12 +91,7 @@ export default function ReceiveToken() {
             size={"lg"}
             variant={"outline"}
             className="w-1/2 cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
-            onClick={()=>{
-                // handleCopy();
-                toast.success("Address Copied",{
-                    description:"Wallet address copied to clipboard"
-                });
-            }}
+            onClick={handleCopy}
           >
             <Copy size={16} className="mr-2" />
             Copy Address

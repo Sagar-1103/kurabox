@@ -4,23 +4,24 @@ import Slidebar from "@/components/custom/slide-bar";
 import { Button } from "@/components/ui/button";
 import { Activity, QrCode, Send } from "lucide-react";
 import React, { useState } from "react";
+import { AccountTypes } from "utils/walletUtils";
 
 export default function Wallet() {
   const [action, setAction] = useState<"wallets" | "activity">("wallets");
-  const [accounts,setAccounts] = useState<{id:number}[]>([
-    {id:1},
-    {id:2},
-    {id:3},
-    {id:4},
-  ]);
-  const [selectedAccountId,setSelectedAccountId] = useState<number>(1);
+  const [accounts, setAccounts] = useState<AccountTypes[]>([]);
+  const [selectedAccountId, setSelectedAccountId] = useState<number>(1);
   return (
     <div>
       <div className="flex justify-between">
         <p className="text-3xl bg-gradient-to-r from-[#c1f94c] to-[#fcd44c] bg-clip-text text-transparent font-bold">
           KuraBox
         </p>
-        <Slidebar accounts={accounts} setAccounts={setAccounts} selectedAccountId={selectedAccountId} setSelectedAccountId={setSelectedAccountId} />
+        <Slidebar
+          accounts={accounts}
+          setAccounts={setAccounts}
+          selectedAccountId={selectedAccountId}
+          setSelectedAccountId={setSelectedAccountId}
+        />
       </div>
 
       <div className="pt-20 flex flex-row gap-x-8 justify-center align-bottom">
@@ -55,9 +56,8 @@ export default function Wallet() {
 
       {action === "wallets" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-y-5 w-full">
-          <ChainCard />
-          <ChainCard />
-          <ChainCard />
+          {accounts.length!==0 &&
+            accounts[selectedAccountId-1]?.tokens?.map((token) => <ChainCard key={token.chain} token={token} />)}
         </div>
       ) : (
         <div className="w-full bg-[#0e121b] p-4 rounded-lg border border-[#1c1f26]">

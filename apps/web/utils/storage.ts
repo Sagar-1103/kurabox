@@ -62,3 +62,26 @@ export const getSeedPhrase = async()=>{
   const seedPhrase = await decrypt(encryptedSeedPhrase,hashHex);
   return seedPhrase;
 } 
+
+export async function deleteAccounts() {
+  if (typeof window === 'undefined') return;
+  const db = await initDB();
+  await db.delete(STORE_NAME, 'accounts');
+}
+
+export const getAccountsFromDB = async () => {
+  if (typeof window === "undefined") return;
+  const db = await initDB();
+  const accounts = await db.get(STORE_NAME,"accounts");
+  return accounts;
+};
+
+export const saveAccounts = async (accounts: string) => {
+  if (typeof window === "undefined") return;
+  const db = await initDB();
+  const isAccountsThere = await getAccountsFromDB();
+  if (isAccountsThere) {
+    await deleteAccounts();
+  }
+  await db.put(STORE_NAME, accounts, "accounts");
+};

@@ -1,12 +1,101 @@
-import {
-  CopyIcon,
-  Link,
-  SendIcon,
-} from "lucide-react";
-import React from "react";
+import { Check, CopyIcon, Link, SendIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import ReceiveToken from "./receive-token";
+import { Token } from "utils/walletUtils";
+import { toast } from "sonner";
+import axios from "axios";
 
-export default function ChainCard() {
+interface ChainCardProps {
+  token: Token;
+}
+
+export default function ChainCard({ token }: ChainCardProps) {
+  const [copied, setCopied] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const getBalance = async () => {
+    try {
+      const url = `https://${token.chain === "solana" ? "solana" : token.chain === "ethereum" ? "eth" : "polygon"}-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`;
+      const method = token.chain === "solana" ? "getBalance" : "eth_getBalance";
+      const response = await axios.post(url, {
+        jsonrpc: "2.0",
+        id: 1,
+        method,
+        params:
+          token.chain === "solana"
+            ? [token.publicKey]
+            : [token.publicKey, "latest"],
+      });
+
+      const res = await response.data;
+      const balanceInHex =
+        token.chain === "solana" ? res.result.value : res.result;
+
+      const bal = BigInt(balanceInHex);
+
+      if (token.chain === "polygon" || token.chain === "ethereum") {
+        const divisor = BigInt("1000000000000000000");
+        setBalance(Number(bal) / Number(divisor));
+      }
+      if (token.chain === "solana") {
+        const divisor = BigInt("1000000000");
+        setBalance(Number(BigInt(balanceInHex)) / Number(divisor));
+      }
+    } catch (error) {
+      console.log("Error fetching balance for ", token.chain, ": ", error);
+    }
+  };
+
+  useEffect(() => {
+    getBalance();
+  }, []);
+
+  const handleCopy = () => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard
+        .writeText(token.publicKey)
+        .then(() => {
+          setCopied(true);
+          toast.success("Address Copied", {
+            description: "Wallet public address copied to clipboard.",
+          });
+          setTimeout(() => setCopied(false), 1000);
+        })
+        .catch(() => {
+          fallbackCopy();
+        });
+    } else {
+      fallbackCopy();
+    }
+  };
+
+  const fallbackCopy = () => {
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = token.publicKey;
+      textarea.style.position = "fixed";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+
+      const success = document.execCommand("copy");
+      document.body.removeChild(textarea);
+
+      if (success) {
+        setCopied(true);
+        toast.success("Address Copied", {
+          description: "Wallet public address copied to clipboard.",
+        });
+        setTimeout(() => setCopied(false), 1000);
+      } else {
+        throw new Error("Fallback copy failed");
+      }
+    } catch (err) {
+      toast.error("Copy failed", {
+        description: "Please manually copy the phrase.",
+      });
+    }
+  };
+
   return (
     <div className="bg-[#0b0c10] rounded-2xl p-6 shadow-xl hover:scale-101 transition border border-[#1a1a1a] w-[340px] text-white">
       <div className="flex items-center justify-between mb-4">
@@ -15,17 +104,25 @@ export default function ChainCard() {
             <Link className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="font-semibold text-lg">Solana</h2>
-            <p className="text-sm text-gray-400">7xXtg...gAsU</p>
+            <h2 className="font-semibold text-lg">
+              {token?.chain.slice(0, 1).toUpperCase() + token?.chain.slice(1)}
+            </h2>
+            <p className="text-sm text-gray-400">
+              {token.publicKey.slice(0, 7) + "..."}
+            </p>
           </div>
         </div>
-        <span className="text-sm bg-[#1f1f1f] px-3 py-1 rounded-full">SOL</span>
+        <span className="text-sm bg-[#1f1f1f] px-3 py-1 rounded-full">
+          {token?.chain.slice(0, 3).toUpperCase()}
+        </span>
       </div>
 
       <div className="mb-3">
         <div className="flex justify-between text-gray-400 text-sm">
           <span>Balance</span>
-          <span className="text-white font-medium">12.45 SOL</span>
+          <span className="text-white font-medium">
+            {balance} {token?.chain.slice(0, 3).toUpperCase()}
+          </span>
         </div>
         <div className="flex justify-between text-sm mt-1">
           <span className="text-gray-400">USD Value</span>
@@ -36,8 +133,19 @@ export default function ChainCard() {
       <div className="border-t border-[#1f1f1f] my-4" />
 
       <div className="flex justify-between mb-3">
-        <button className="flex items-center gap-2 text-sm hover:bg-[#1e1e1e] px-3 py-2 rounded-lg transition">
-          <CopyIcon className="w-4 h-4" /> Copy
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-2 text-sm hover:bg-[#1e1e1e] px-3 py-2 rounded-lg transition"
+        >
+          {copied ? (
+            <>
+              <Check className="w-4 h-4" /> Copied
+            </>
+          ) : (
+            <>
+              <CopyIcon className="w-4 h-4" /> Copy
+            </>
+          )}
         </button>
       </div>
 
@@ -45,10 +153,7 @@ export default function ChainCard() {
         <button className="flex items-center justify-center gap-2 hover:bg-[#c1f94c] hover:text-black py-2 rounded-lg border border-gray-700 transition">
           <SendIcon className="w-4 h-4" /> Send
         </button>
-        {/* <button className="flex items-center justify-center gap-2 hover:bg-[#c1f94c] hover:text-black py-2 rounded-lg border border-gray-700 transition">
-          <DownloadIcon className="w-4 h-4" /> Receive
-        </button> */}
-          <ReceiveToken/>
+        <ReceiveToken publicAddress={token.publicKey} handleCopy={handleCopy} />
       </div>
     </div>
   );

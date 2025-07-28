@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import {
   Sheet,
@@ -8,18 +8,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import {
-  ArrowRight,
-  LucideLogOut,
-  Plus,
-  Settings,
-} from "lucide-react";
-import { deletePassword, deleteSeedPhrase } from "utils/storage";
+import { ArrowRight, LucideLogOut, Plus, Settings } from "lucide-react";
+import { deleteAccounts, deletePassword, deleteSeedPhrase } from "utils/storage";
 import { useRouter } from "next/navigation";
+import { AccountTypes, WalletUtils } from "utils/walletUtils";
 
 interface SlidebarProps {
-  accounts: { id: number }[];
-  setAccounts: (account: { id: number }[]) => void;
+  accounts: AccountTypes[];
+  setAccounts: (account: AccountTypes[]) => void;
   selectedAccountId: number;
   setSelectedAccountId: (accountId: number) => void;
 }
@@ -30,13 +26,26 @@ export default function Slidebar({
   selectedAccountId,
   setSelectedAccountId,
 }: SlidebarProps) {
-  const addAccounts = () => {
-    const newAccounts = [...accounts];
-    newAccounts.push({ id: accounts.length + 1 });
-    setAccounts(newAccounts);
+  const [render,setRender] = useState(false);
+  const addAccounts = async() => {
+    await WalletUtils.addAccount(accounts.length);
+    setRender((prev)=>!prev);
   };
 
   const router = useRouter();
+
+  const getAccounts = async () => {
+    await WalletUtils.init();
+    const accounts = await WalletUtils.getAccounts();
+    
+    if (accounts) {
+      setAccounts(accounts);      
+    }
+  };
+
+  useEffect(() => {
+    getAccounts();
+  }, [render]);
 
   return (
     <>
@@ -57,12 +66,12 @@ export default function Slidebar({
           </SheetHeader>
           <div className="h-[55%] md:h-[62%]  flex flex-col gap-y-4 overflow-y-auto scrollbar-hide ">
             {accounts.map((account) => (
-              <div key={account.id} className=" p-2 rounded-lg shadow-md mx-1">
+              <div key={account.id+1} className=" p-2 rounded-lg shadow-md mx-1">
                 <Avatar
-                  onClick={() => setSelectedAccountId(account.id)}
-                  className={`rounded-lg hover:bg-[#c1f94c] hover:text-black ${selectedAccountId === account.id ? "bg-[#c1f94c] text-black" : "bg-gray-700 text-white"} w-10 h-10 my-1 m-auto cursor-pointer font-semibold `}
+                  onClick={() => setSelectedAccountId(account.id+1)}
+                  className={`rounded-lg hover:bg-[#c1f94c] hover:text-black ${selectedAccountId === account.id+1 ? "bg-[#c1f94c] text-black" : "bg-gray-700 text-white"} w-10 h-10 my-1 m-auto cursor-pointer font-semibold `}
                 >
-                  <AvatarFallback>A{account.id}</AvatarFallback>
+                  <AvatarFallback>A{account.id+1}</AvatarFallback>
                 </Avatar>
               </div>
             ))}
@@ -83,9 +92,10 @@ export default function Slidebar({
             </button>
 
             <button
-              onClick={() => {
-                deleteSeedPhrase();
-                deletePassword();
+              onClick={async() => {
+                await deleteSeedPhrase();
+                await deletePassword();
+                await deleteAccounts();
                 router.replace("/");
               }}
               className="text-white p-2 hover:bg-red-600 cursor-pointer rounded-md hover:text-white transition-all duration-200"
