@@ -15,6 +15,10 @@ app.use(
   })
 );
 
+app.get("/",(req,res)=>{
+  res.status(200).json({success:true,data:{name:"kurabox-backend"},message:"server running..."})
+})
+
 app.use("/wallet",walletRouter);
 
 app.listen(port, () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,20 +8,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Settings,
-  Shield,
-  ChevronRight,
-  Code2,
-} from "lucide-react";
+import { Settings, ChevronRight, Code2, KeyRound, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { saveMode } from "utils/storage";
 
 const settingsItems = [
   {
-    title: "Security & Privacy",
-    icon: <Shield className="w-4 h-4 text-pink-400" />,
-    toggle: false,
+    title: "Reset Pin",
+    icon: <KeyRound className="w-4 h-4 text-yellow-400" />,
+  },
+  {
+    title: "Auto Lock Timer",
+    icon: <Lock className="w-4 h-4 text-blue-400" />,
+    timer: true,
   },
   {
     title: "Testnet Mode",
@@ -32,26 +31,38 @@ const settingsItems = [
 
 interface SettingsDialogProps {
   children: React.ReactNode;
-  mode:"mainnet"|"testnet";
-  setMode:(newMode:"mainnet"|"testnet")=>void;
+  mode: "mainnet" | "testnet";
+  setMode: (newMode: "mainnet" | "testnet") => void;
 }
 
-export default function SettingsDialog({ children,mode,setMode }: SettingsDialogProps) {
-  const toggleMode = async() => {
-    if(mode==="mainnet") {
+const timerOptions = [5, 10, 15, 30];
+
+export default function SettingsDialog({
+  children,
+  mode,
+  setMode,
+}: SettingsDialogProps) {
+  const toggleMode = async () => {
+    if (mode === "mainnet") {
       setMode("testnet");
       await saveMode("testnet");
-      toast.success("Switched to Testnet",{
-        description:"You are now on the development network."
+      toast.success("Switched to Testnet", {
+        description: "You are now on the development network.",
       });
     } else {
       setMode("mainnet");
       await saveMode("mainnet");
-      toast.success("Switched to Mainnet",{
-        description:"You are now on the main network."
+      toast.success("Switched to Mainnet", {
+        description: "You are now on the main network.",
       });
     }
-  }
+  };
+
+  const changeTimer = () => {
+    setTimerIndex((prevIndex) => (prevIndex + 1) % timerOptions.length);
+  };
+
+  const [timerIndex, setTimerIndex] = useState<number>(2);
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -68,8 +79,8 @@ export default function SettingsDialog({ children,mode,setMode }: SettingsDialog
           {settingsItems.map((item, index) => (
             <div
               key={index}
-              onClick={item.toggle?toggleMode:()=>{}}
-              className="flex items-center cursor-pointer justify-between bg-[#14191f] border border-gray-700 rounded-lg px-4 py-3 hover:bg-[#1c212a] transition-colors"
+              onClick={item.toggle ? toggleMode :item.timer?changeTimer:() => {}}
+              className="flex items-center select-none cursor-pointer justify-between bg-[#14191f] border border-gray-700 rounded-lg px-4 py-3 hover:bg-[#1c212a] transition-colors"
             >
               <div className="flex items-center gap-3">
                 {item.icon}
@@ -77,7 +88,13 @@ export default function SettingsDialog({ children,mode,setMode }: SettingsDialog
               </div>
 
               {item.toggle ? (
-                <p className="text-sm text-gray-400">{mode==="testnet"?"ON":"OFF"}</p>
+                <p className="text-sm text-gray-400">
+                  {mode === "testnet" ? "ON" : "OFF"}
+                </p>
+              ) : item.timer ? (
+                <p onClick={() => {}} className="text-sm text-gray-400">
+                  {timerOptions[timerIndex]} minutes
+                </p>
               ) : (
                 <ChevronRight className="w-4 h-4 text-gray-400" />
               )}

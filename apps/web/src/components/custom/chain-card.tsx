@@ -1,8 +1,10 @@
-import { Check, CopyIcon, DownloadIcon, Link, SendIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Check, CopyIcon, DownloadIcon, SendIcon } from "lucide-react";
+import React, { useState } from "react";
 import ReceiveToken from "./receive-token";
 import { Token } from "utils/walletUtils";
 import { toast } from "sonner";
+import Image from "next/image";
+import { imagePaths } from "utils/image-paths";
 
 interface ChainCardProps {
   token: Token;
@@ -63,9 +65,7 @@ export default function ChainCard({ token,balance }: ChainCardProps) {
     <div className="bg-[#0b0c10] rounded-2xl p-6 shadow-xl hover:scale-101 transition border border-[#1a1a1a] w-[340px] text-white">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="bg-purple-500 p-2 rounded-full">
-            <Link className="w-6 h-6 text-white" />
-          </div>
+            <Image src={imagePaths[`${token.chain}`]} width={20} height={20} alt={token.chain} className="w-10 h-10 text-white rounded-full" />
           <div>
             <h2 className="font-semibold text-lg">
               {token?.chain.slice(0, 1).toUpperCase() + token?.chain.slice(1)}

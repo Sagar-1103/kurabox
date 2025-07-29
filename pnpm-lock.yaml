@@ -196,6 +196,9 @@ importers:
       ethers:
         specifier: ^6.15.0
         version: 6.15.0
+      html-to-image:
+        specifier: ^1.11.13
+        version: 1.11.13
       idb:
         specifier: ^8.0.3
         version: 8.0.3
@@ -7714,6 +7717,10 @@ packages:
     engines: {node: ^16.14.0 || >=18.0.0}
     dependencies:
       lru-cache: 10.4.3
+    dev: false
+
+  /html-to-image@1.11.13:
+    resolution: {integrity: sha512-cuOPoI7WApyhBElTTb9oqsawRvZ0rHhaHwghRLlTuffoD1B2aDemlCruLeZrUIIdvG7gs9xeELEPm6PhuASqrg==}
     dev: false
 
   /http-errors@2.0.0:

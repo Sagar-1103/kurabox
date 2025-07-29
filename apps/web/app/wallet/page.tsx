@@ -8,15 +8,21 @@ import React, { useEffect, useState } from "react";
 import { AccountTypes, Chain } from "utils/walletUtils";
 import useGetBalances from "hooks/get-balances";
 import { getSelectedAccountIndex } from "utils/storage";
-
+import SendDialog from "@/components/custom/send-dialog";
 
 export default function Wallet() {
   const [action, setAction] = useState<"wallets" | "activity">("wallets");
   const [accounts, setAccounts] = useState<AccountTypes[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState<number>(1);
-  const [balances,setBalances] = useState<{chain:Chain,balance:number}[]>([{chain:"solana",balance:0},{chain:"polygon",balance:0},{chain:"ethereum",balance:0}]);
-  const [mode,setMode] = useState<"mainnet"|"testnet">("mainnet");
-  useGetBalances(accounts,selectedAccountId,mode,setBalances,setMode);
+  const [balances, setBalances] = useState<{ chain: Chain; balance: number }[]>(
+    [
+      { chain: "solana", balance: 0 },
+      { chain: "polygon", balance: 0 },
+      { chain: "ethereum", balance: 0 },
+    ]
+  );
+  const [mode, setMode] = useState<"mainnet" | "testnet">("mainnet");
+  useGetBalances(accounts, selectedAccountId, mode, setBalances, setMode);
 
   const getDBIndex = async () => {
     const selectedIndex = await getSelectedAccountIndex();
@@ -24,9 +30,9 @@ export default function Wallet() {
     setSelectedAccountId(selectedIndex);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getDBIndex();
-  },[])
+  }, []);
 
   return (
     <div>
@@ -45,16 +51,18 @@ export default function Wallet() {
       </div>
 
       <div className="pt-20 flex flex-row gap-x-8 justify-center align-bottom">
-        <Receive networks={accounts[selectedAccountId-1]?.tokens ?? []}>
+        <Receive networks={accounts[selectedAccountId - 1]?.tokens ?? []}>
           <div className="flex flex-col w-32 h-32 items-center cursor-pointer gap-y-2 hover:bg-[#c1f94c] hover:text-black font-semibold border-gray-800 border-1 hover:border-0 justify-center rounded-md">
             <QrCode size={40} />
             <p>Receive</p>
           </div>
         </Receive>
-        <div className="flex flex-col w-32 h-32 items-center cursor-pointer gap-y-2 hover:bg-[#c1f94c] hover:text-black font-semibold border-gray-800 border-1 hover:border-0 justify-center rounded-md">
-          <Send size={40} />
-          <p>Send</p>
-        </div>
+        <SendDialog balances={balances} networks={accounts[selectedAccountId - 1]?.tokens ?? []} >
+          <div className="flex flex-col w-32 h-32 items-center cursor-pointer gap-y-2 hover:bg-[#c1f94c] hover:text-black font-semibold border-gray-800 border-1 hover:border-0 justify-center rounded-md">
+            <Send size={40} />
+            <p>Send</p>
+          </div>
+        </SendDialog>
       </div>
 
       <div className="bg-[#151c29] flex flex-row rounded-xl p-1.5 mt-10 mb-6">
@@ -79,8 +87,12 @@ export default function Wallet() {
       {action === "wallets" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-y-5 w-full">
           {accounts.length !== 0 &&
-            accounts[selectedAccountId - 1]?.tokens?.map((token,index) => (
-              <ChainCard key={token.chain} token={token} balance={balances[index]?.balance||0} />
+            accounts[selectedAccountId - 1]?.tokens?.map((token, index) => (
+              <ChainCard
+                key={token.chain}
+                token={token}
+                balance={balances[index]?.balance || 0}
+              />
             ))}
         </div>
       ) : (
