@@ -46,7 +46,7 @@ export default function ReceiveToken({
           </p>
         </DialogHeader>
 
-        <div className="w-[220px] h-[220px] mx-auto border-2 border-dashed border-gray-700 rounded-md flex flex-col items-center justify-center mt-6">
+        <div className="w-[220px] h-[220px] mx-auto border-2 border-dashed border-gray-700 rounded-md flex flex-col items-center justify-center ">
           {!publicAddress ? (
             <>
               <QrCode className="text-gray-600 w-8 h-8 mb-2" />
@@ -82,7 +82,7 @@ export default function ReceiveToken({
           )}
         </div>
 
-        <div className="mt-5 w-full">
+        <div className=" w-full">
           <label className="text-sm block text-gray-400 mb-2">
             Wallet Address
           </label>
@@ -103,11 +103,11 @@ export default function ReceiveToken({
           loss.
         </div>
 
-        <div className="mt-5 flex flex-row justify-center gap-3">
+        <div className="mt-5 flex flex-col sm:flex-row justify-center gap-3">
           <Button
             size={"lg"}
             variant={"outline"}
-            className="w-[48%] cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
+            className="w-full sm:w-[48%] cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
             onClick={() =>
               handleCopy(publicAddress, setCopied, {
                 title: "Address Copied",
@@ -131,7 +131,7 @@ export default function ReceiveToken({
             variant="outline"
             onClick={download}
             size={"lg"}
-            className="w-[48%] cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
+            className="w-full sm:w-[48%] cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
           >
             <DownloadIcon size={16} className="mr-2" />
             Download
