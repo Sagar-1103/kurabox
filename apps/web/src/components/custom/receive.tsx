@@ -48,7 +48,6 @@ export default function Receive({ children, networks }: ReceiveProps) {
               key={index}
               publicAddress={network.publicKey}
               chain={network.chain}
-              handleCopy={() => {}}
             >
               <div
                 key={index}

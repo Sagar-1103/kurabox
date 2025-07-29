@@ -32,7 +32,7 @@ export const savePassword = async (password: string) => {
   const db = await initDB();
   const isPasswordThere = await isPasswordStored();
   if (isPasswordThere) {
-    deletePassword();
+    await deletePassword();
   }
   const hashHex = await passwordHashHex(password);
   await db.put(STORE_NAME, hashHex, "password");
@@ -97,7 +97,7 @@ export const saveMode = async (mode: "mainnet"|"testnet") => {
   const db = await initDB();
   const isModeThere = await getMode();
   if (isModeThere) {
-    deleteMode();
+    await deleteMode();
   }
   await db.put(STORE_NAME, mode, "mode");
 };
@@ -121,7 +121,7 @@ export const saveSelectedAccountIndex = async (index: number) => {
   const db = await initDB();
   const isIndexThere = await getSelectedAccountIndex();
   if (isIndexThere) {
-    deleteSelectedAccountIndex();
+    await deleteSelectedAccountIndex();
   }
   await db.put(STORE_NAME, index, "selectedAccountIndex");
 };

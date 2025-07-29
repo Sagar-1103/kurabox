@@ -1,5 +1,5 @@
 import { mnemonicToSeed } from "bip39";
-import { getAccountsFromDB, getSeedPhrase, saveAccounts } from "./storage";
+import { getAccountsFromDB, getSeedPhrase, saveAccounts, saveSelectedAccountIndex } from "./storage";
 import { derivePath } from "ed25519-hd-key";
 import nacl from "tweetnacl";
 import { Keypair } from "@solana/web3.js";
@@ -22,6 +22,7 @@ export class WalletUtils {
   private static seedPhrase?: string | null = null;
 
   static async init() {
+    if (typeof window === "undefined") return;
     const phrase = await getSeedPhrase();
     this.seedPhrase = phrase?.trim().toLowerCase().replace(/\s+/g, " ") || null;
   }
@@ -54,6 +55,7 @@ export class WalletUtils {
   }
 
   static async getAccounts() {
+    if (typeof window === "undefined") return;
     if (!this.seedPhrase) return;
     if (this.accounts.length === 0) {
       const stringifiedAccounts = await getAccountsFromDB();
@@ -61,6 +63,7 @@ export class WalletUtils {
         this.accounts = JSON.parse(stringifiedAccounts);
       } else {
         await this.addAccount(0);
+        await saveSelectedAccountIndex(1);
       }
       return this.accounts;
     }
@@ -68,7 +71,7 @@ export class WalletUtils {
 
   static async addAccount(index: number) {
     if (!this.seedPhrase) return;
-
+    if (typeof window === "undefined") return;
     const keyPairs = await this.createAccount(index);
     if(!keyPairs) return;
     const solWallet:Token = {publicKey:keyPairs?.solKeypair.publicKey,chain:"solana"};

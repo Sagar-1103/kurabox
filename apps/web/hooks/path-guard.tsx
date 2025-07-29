@@ -9,6 +9,7 @@ export function PathGuard() {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     async function checkAccess() {
       const password = await getPassword();
 

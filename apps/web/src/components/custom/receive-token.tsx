@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,28 +9,28 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { Copy, DownloadIcon, QrCode } from "lucide-react";
+import { Check, Copy, DownloadIcon, QrCode } from "lucide-react";
 import { Input } from "../ui/input";
 import { useQRCode } from "next-qrcode";
 import { Chain } from "utils/walletUtils";
 import useDownloadAddress from "utils/useDownloadAddress";
 import Image from "next/image";
 import { imagePaths } from "utils/image-paths";
+import { handleCopy } from "utils/copy";
 interface ReceiveTokenProps {
   publicAddress: string;
   chain: Chain;
-  handleCopy: () => void;
   children: React.ReactNode;
 }
 
 export default function ReceiveToken({
   publicAddress,
-  handleCopy,
   children,
   chain,
 }: ReceiveTokenProps) {
   const { SVG } = useQRCode();
   const { DownloadCard, download } = useDownloadAddress(chain, publicAddress);
+  const [copied, setCopied] = useState(false);
 
   return (
     <Dialog>
@@ -97,9 +97,10 @@ export default function ReceiveToken({
         </div>
 
         <div className="mt-4 bg-[#232217] text-yellow-300 text-xs border-yellow-600/70 border-1 p-3 rounded-lg leading-relaxed">
-          <span className="font-semibold">Important:</span> Only send {chain.slice(0,3).toUpperCase()} to
-          this address on the {chain} network. Sending tokens from other networks
-          may result in permanent loss.
+          <span className="font-semibold">Important:</span> Only send{" "}
+          {chain.slice(0, 3).toUpperCase()} to this address on the {chain}{" "}
+          network. Sending tokens from other networks may result in permanent
+          loss.
         </div>
 
         <div className="mt-5 flex flex-row gap-3">
@@ -107,10 +108,24 @@ export default function ReceiveToken({
             size={"lg"}
             variant={"outline"}
             className="w-1/2 cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
-            onClick={handleCopy}
+            onClick={() =>
+              handleCopy(publicAddress, setCopied, {
+                title: "Address Copied",
+                description: "Wallet public address copied to clipboard.",
+              })
+            }
           >
-            <Copy size={16} className="mr-2" />
-            Copy Address
+            {copied ? (
+              <>
+                <Check size={16} className="mr-2" />
+                Copied Address
+              </>
+            ) : (
+              <>
+                <Copy size={16} className="mr-2" />
+                Copy Address
+              </>
+            )}
           </Button>
           <Button
             variant="outline"

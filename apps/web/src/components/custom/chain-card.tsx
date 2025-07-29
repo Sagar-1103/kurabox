@@ -2,9 +2,9 @@ import { Check, CopyIcon, DownloadIcon, SendIcon } from "lucide-react";
 import React, { useState } from "react";
 import ReceiveToken from "./receive-token";
 import { Token } from "utils/walletUtils";
-import { toast } from "sonner";
 import Image from "next/image";
 import { imagePaths } from "utils/image-paths";
+import { handleCopy } from "utils/copy";
 
 interface ChainCardProps {
   token: Token;
@@ -13,53 +13,6 @@ interface ChainCardProps {
 
 export default function ChainCard({ token,balance }: ChainCardProps) {
   const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard
-        .writeText(token.publicKey)
-        .then(() => {
-          setCopied(true);
-          toast.success("Address Copied", {
-            description: "Wallet public address copied to clipboard.",
-          });
-          setTimeout(() => setCopied(false), 1000);
-        })
-        .catch(() => {
-          fallbackCopy();
-        });
-    } else {
-      fallbackCopy();
-    }
-  };
-
-  const fallbackCopy = () => {
-    try {
-      const textarea = document.createElement("textarea");
-      textarea.value = token.publicKey;
-      textarea.style.position = "fixed";
-      document.body.appendChild(textarea);
-      textarea.focus();
-      textarea.select();
-
-      const success = document.execCommand("copy");
-      document.body.removeChild(textarea);
-
-      if (success) {
-        setCopied(true);
-        toast.success("Address Copied", {
-          description: "Wallet public address copied to clipboard.",
-        });
-        setTimeout(() => setCopied(false), 1000);
-      } else {
-        throw new Error("Fallback copy failed");
-      }
-    } catch (err) {
-      toast.error("Copy failed", {
-        description: "Please manually copy the phrase.",
-      });
-    }
-  };
 
   return (
     <div className="bg-[#0b0c10] rounded-2xl p-6 shadow-xl hover:scale-101 transition border border-[#1a1a1a] w-[340px] text-white">
@@ -93,7 +46,7 @@ export default function ChainCard({ token,balance }: ChainCardProps) {
 
       <div className="flex justify-between mb-3">
         <button
-          onClick={handleCopy}
+          onClick={()=>handleCopy(token.publicKey,setCopied,{title:"Address Copied",description:"Wallet public address copied to clipboard."})}
           className="flex items-center gap-2 text-sm hover:bg-[#1e1e1e] px-3 py-2 rounded-lg transition"
         >
           {copied ? (
@@ -113,7 +66,7 @@ export default function ChainCard({ token,balance }: ChainCardProps) {
           <SendIcon className="w-4 h-4" /> Send
         </button>
 
-        <ReceiveToken chain={token.chain} publicAddress={token.publicKey} handleCopy={handleCopy}>
+        <ReceiveToken chain={token.chain} publicAddress={token.publicKey}>
           <button className="flex items-center justify-center gap-2 hover:bg-[#c1f94c] hover:text-black py-2 rounded-lg border border-gray-700 transition">
             <DownloadIcon className="w-4 h-4" /> Receive
           </button>

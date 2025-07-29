@@ -1,6 +1,7 @@
 import { getPassword } from "./storage";
 
 export const passwordHashHex = async (password: string) => {
+  if (typeof window === "undefined" || !window.crypto?.subtle ) return;
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -25,6 +26,7 @@ const dec = (b:ArrayBuffer) => new TextDecoder().decode(b);
 
 // Encrypt
 export const encrypt = async (text:string, password:string) => {
+  if (typeof window === "undefined" || !window.crypto?.subtle ) return;
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const key = await crypto.subtle.deriveKey(
@@ -41,6 +43,7 @@ export const encrypt = async (text:string, password:string) => {
 
 // Decrypt
 export const decrypt = async(encrypted:string, password:string) => {
+  if (typeof window === "undefined" || !window.crypto?.subtle ) return;
   const data = Uint8Array.from(atob(encrypted), c => c.charCodeAt(0));
   const salt = data.slice(0, 16), iv = data.slice(16, 28), ct = data.slice(28);
   const key = await crypto.subtle.deriveKey(

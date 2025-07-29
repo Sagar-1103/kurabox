@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { getMode } from "utils/storage";
+import { getMode, saveMode } from "utils/storage";
 import { AccountTypes } from "utils/walletUtils";
 import { Chain } from "utils/walletUtils";
 
@@ -20,7 +20,10 @@ export default function useGetBalances(
 
   const getDBMode = async () => {
     const selectedMode = await getMode();
-    if (!selectedMode) return;
+    if(!selectedMode) {
+      await saveMode("mainnet");
+      setMode("mainnet")
+    }
     setMode(selectedMode);
   };
 

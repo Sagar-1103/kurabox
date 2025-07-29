@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { saveSeedPhrase } from "utils/storage";
 import {generateMnemonic} from "bip39";
+import { handleCopy } from "utils/copy";
 
 export default function Done() {
   const [acknowledged, setAcknowledged] = useState(false);
@@ -19,53 +20,6 @@ export default function Done() {
   useEffect(()=>{
     setSecretPhrase(mnemonics);
   },[])
-
-  const handleCopy = () => {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard
-        .writeText(secretPhrase)
-        .then(() => {
-          setCopied(true);
-          toast.success("Copied to clipboard", {
-            description: "Seed phrase has been copied to your clipboard.",
-          });
-          setTimeout(() => setCopied(false), 2000);
-        })
-        .catch(() => {
-          fallbackCopy();
-        });
-    } else {
-      fallbackCopy();
-    }
-  };
-
-  const fallbackCopy = () => {
-    try {
-      const textarea = document.createElement("textarea");
-      textarea.value = secretPhrase;
-      textarea.style.position = "fixed";
-      document.body.appendChild(textarea);
-      textarea.focus();
-      textarea.select();
-
-      const success = document.execCommand("copy");
-      document.body.removeChild(textarea);
-
-      if (success) {
-        setCopied(true);
-        toast.success("Copied to clipboard", {
-          description: "Seed phrase has been copied to your clipboard.",
-        });
-        setTimeout(() => setCopied(false), 2000);
-      } else {
-        throw new Error("Fallback copy failed");
-      }
-    } catch (err) {
-      toast.error("Copy failed", {
-        description: "Please manually copy the phrase.",
-      });
-    }
-  };
 
   return (
     <div className="w-full mx-auto bg-[#0e131b] mt-6 px-6 py-8 rounded-lg shadow-lg">
@@ -96,7 +50,7 @@ export default function Done() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={handleCopy}
+          onClick={()=>handleCopy(secretPhrase,setCopied,{title:"Copied to clipboard",description:"Seed phrase has been copied to your clipboard."})}
           className="text-xs text-gray-300 hover:text-white gap-1"
         >
           {copied ? (

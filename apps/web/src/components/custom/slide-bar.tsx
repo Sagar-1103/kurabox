@@ -18,23 +18,26 @@ import {
 } from "lucide-react";
 import {
   deleteAccounts,
+  deleteMode,
   deletePassword,
   deleteSeedPhrase,
+  deleteSelectedAccountIndex,
   saveSelectedAccountIndex,
 } from "utils/storage";
 import { useRouter } from "next/navigation";
-import { AccountTypes, Chain, WalletUtils } from "utils/walletUtils";
+import { AccountTypes, WalletUtils } from "utils/walletUtils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { toast } from "sonner";
 import SettingsDialog from "./Settings";
+import { handleCopy } from "utils/copy";
 
 interface SlidebarProps {
   accounts: AccountTypes[];
   setAccounts: (account: AccountTypes[]) => void;
   selectedAccountId: number;
   setSelectedAccountId: (accountId: number) => void;
-  mode:"mainnet"|"testnet";
-  setMode:(newMode:"mainnet"|"testnet")=>void;
+  mode: "mainnet" | "testnet";
+  setMode: (newMode: "mainnet" | "testnet") => void;
 }
 
 export default function Slidebar({
@@ -49,6 +52,7 @@ export default function Slidebar({
   const [copiedChain, setCopiedChain] = useState<
     null | "solana" | "polygon" | "ethereum"
   >(null);
+  const [copied, setCopied] = useState(false);
   const addAccounts = async () => {
     await WalletUtils.addAccount(accounts.length);
     setRender((prev) => !prev);
@@ -71,59 +75,6 @@ export default function Slidebar({
   useEffect(() => {
     getAccounts();
   }, [render]);
-
-  const handleCopy = (chain: Chain, data: string) => {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard
-        .writeText(data)
-        .then(() => {
-          setCopiedChain(chain);
-          toast.success("Address Copied", {
-            description:
-              chain.charAt(0).toUpperCase() +
-              chain.slice(1) +
-              " public address copied to clipboard.",
-          });
-          setTimeout(() => setCopiedChain(null), 1000);
-        })
-        .catch(() => {
-          fallbackCopy(chain, data);
-        });
-    } else {
-      fallbackCopy(chain, data);
-    }
-  };
-
-  const fallbackCopy = (chain: Chain, data: string) => {
-    try {
-      const textarea = document.createElement("textarea");
-      textarea.value = data;
-      textarea.style.position = "fixed";
-      document.body.appendChild(textarea);
-      textarea.focus();
-      textarea.select();
-
-      const success = document.execCommand("copy");
-      document.body.removeChild(textarea);
-
-      if (success) {
-        setCopiedChain(chain);
-        toast.success("Address Copied", {
-          description:
-            chain.charAt(0).toUpperCase() +
-            chain.slice(1) +
-            " public address copied to clipboard.",
-        });
-        setTimeout(() => setCopiedChain(null), 1000);
-      } else {
-        throw new Error("Fallback copy failed");
-      }
-    } catch (err) {
-      toast.error("Copy failed", {
-        description: "Please manually copy the phrase.",
-      });
-    }
-  };
 
   return (
     <>
@@ -151,9 +102,9 @@ export default function Slidebar({
                 <Tooltip>
                   <TooltipTrigger>
                     <Avatar
-                      onClick={async() => {
+                      onClick={async () => {
                         setSelectedAccountId(account.id + 1);
-                        await saveSelectedAccountIndex(account.id+1);
+                        await saveSelectedAccountIndex(account.id + 1);
                       }}
                       className={`rounded-lg hover:bg-[#c1f94c] hover:text-black ${selectedAccountId === account.id + 1 ? "bg-[#c1f94c] text-black" : "bg-gray-700 text-white"} w-10 h-10 my-1 m-auto cursor-pointer font-semibold `}
                     >
@@ -178,9 +129,16 @@ export default function Slidebar({
                             </p>
                             {copiedChain !== token.chain ? (
                               <Copy
-                                onClick={() =>
-                                  handleCopy(token.chain, token.publicKey)
-                                }
+                                onClick={() => {
+                                  setCopiedChain(token.chain);
+                                  handleCopy(token.publicKey, setCopied, {
+                                    title: "Address Copied",
+                                    description:
+                                      token.chain.charAt(0).toUpperCase() +
+                                      token.chain.slice(1) +
+                                      " public address copied to clipboard.",
+                                  });
+                                }}
                                 size={15}
                                 className="mx-2"
                               />
@@ -210,7 +168,7 @@ export default function Slidebar({
               <Plus className="w-6 h-6" />
             </button>
 
-            <SettingsDialog mode={mode} setMode={setMode} >
+            <SettingsDialog mode={mode} setMode={setMode}>
               <button className="text-white p-2 hover:bg-white cursor-pointer rounded-md hover:text-black transition-all duration-200">
                 <Settings className="w-6 h-6" />
               </button>
@@ -221,6 +179,8 @@ export default function Slidebar({
                 await deleteSeedPhrase();
                 await deletePassword();
                 await deleteAccounts();
+                await deleteSelectedAccountIndex();
+                await deleteMode();
                 router.replace("/");
               }}
               className="text-white p-2 hover:bg-red-600 cursor-pointer rounded-md hover:text-white transition-all duration-200"
