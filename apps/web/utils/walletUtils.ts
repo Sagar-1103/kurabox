@@ -1,5 +1,5 @@
 import { mnemonicToSeed } from "bip39";
-import { getAccountsFromDB, getSeedPhrase, saveAccounts, saveSelectedAccountIndex } from "./storage";
+import { getSeedPhrase } from "./storage";
 import { derivePath } from "ed25519-hd-key";
 import nacl from "tweetnacl";
 import { Keypair } from "@solana/web3.js";
@@ -58,12 +58,12 @@ export class WalletUtils {
     if (typeof window === "undefined") return;
     if (!this.seedPhrase) return;
     if (this.accounts.length === 0) {
-      const stringifiedAccounts = await getAccountsFromDB();
+      const stringifiedAccounts = localStorage.getItem('accounts');
       if (stringifiedAccounts) {
         this.accounts = JSON.parse(stringifiedAccounts);
       } else {
         await this.addAccount(0);
-        await saveSelectedAccountIndex(1);
+        localStorage.setItem('accountIndex',"1");
       }
       return this.accounts;
     }
@@ -80,7 +80,7 @@ export class WalletUtils {
 
     this.accounts.push({ id: index,tokens:[solWallet,ethWallet,polWallet]});
     
-    await saveAccounts(JSON.stringify([...this.accounts]));
+   localStorage.setItem('accounts',JSON.stringify([...this.accounts]));
     return { id: index,tokens:[solWallet,ethWallet,polWallet]};
   }
 }

@@ -61,74 +61,12 @@ export const getSeedPhrase = async()=>{
   if (!encryptedSeedPhrase) return null;
   const seedPhrase = await decrypt(encryptedSeedPhrase,hashHex);
   return seedPhrase;
-} 
-
-export async function deleteAccounts() {
-  if (typeof window === 'undefined') return;
-  const db = await initDB();
-  await db.delete(STORE_NAME, 'accounts');
 }
 
-export const getAccountsFromDB = async () => {
-  if (typeof window === "undefined") return;
-  const db = await initDB();
-  const accounts = await db.get(STORE_NAME,"accounts");
-  return accounts;
-};
-
-export const saveAccounts = async (accounts: string) => {
-  if (typeof window === "undefined") return;
-  const db = await initDB();
-  const isAccountsThere = await getAccountsFromDB();
-  if (isAccountsThere) {
-    await deleteAccounts();
-  }
-  await db.put(STORE_NAME, accounts, "accounts");
-};
-
-export async function deleteMode() {
-  if (typeof window === 'undefined') return;
-  const db = await initDB();
-  await db.delete(STORE_NAME, 'mode');
+export const isSeedStored = async()=>{
+    if (typeof window === "undefined") return;
+    const db = await initDB();
+    const seed = await db.get(STORE_NAME,"seed");
+    return seed?true:false;
 }
 
-export const saveMode = async (mode: "mainnet"|"testnet") => {
-  if (typeof window === "undefined") return;
-  const db = await initDB();
-  const isModeThere = await getMode();
-  if (isModeThere) {
-    await deleteMode();
-  }
-  await db.put(STORE_NAME, mode, "mode");
-};
-
-export const getMode = async () => {
-  if (typeof window === "undefined") return;
-  const db = await initDB();
-  const mode = await db.get(STORE_NAME,"mode");
-  return mode;
-};
-
-
-export async function deleteSelectedAccountIndex() {
-  if (typeof window === 'undefined') return;
-  const db = await initDB();
-  await db.delete(STORE_NAME, 'selectedAccountIndex');
-}
-
-export const saveSelectedAccountIndex = async (index: number) => {
-  if (typeof window === "undefined") return;
-  const db = await initDB();
-  const isIndexThere = await getSelectedAccountIndex();
-  if (isIndexThere) {
-    await deleteSelectedAccountIndex();
-  }
-  await db.put(STORE_NAME, index, "selectedAccountIndex");
-};
-
-export const getSelectedAccountIndex = async () => {
-  if (typeof window === "undefined") return;
-  const db = await initDB();
-  const index = await db.get(STORE_NAME,"selectedAccountIndex");
-  return index;
-};

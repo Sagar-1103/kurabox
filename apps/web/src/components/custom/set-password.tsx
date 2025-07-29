@@ -54,8 +54,8 @@ export default function SetPassword({ setAction }: SetPasswordProps) {
       <Button
         disabled={password.length < 6 || password !== confirmPassword}
         onClick={async() => {
-          setAction("new");
           await savePassword(password);
+          setAction("new");
           toast.success("Password has been set successfully", {
             description: "Your password is now active for your wallet.",
           });

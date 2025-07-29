@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,6 @@ import {
   Eye,
 } from "lucide-react";
 import { toast } from "sonner";
-import { saveMode } from "utils/storage";
 import ResetPin from "./reset-pin";
 import SecretPhrase from "./secret-phrase";
 
@@ -28,14 +27,14 @@ const settingsItems = [
     reset: true,
   },
   {
-    title: "Auto Lock Timer",
-    icon: <Lock className="w-4 h-4 text-blue-400" />,
-    timer: true,
-  },
-  {
     title: "Show Seed Phrase",
     icon: <Eye className="w-4 h-4 text-fuchsia-400" />,
     show: true,
+  },
+  {
+    title: "Auto Lock Timer",
+    icon: <Lock className="w-4 h-4 text-blue-400" />,
+    timer: true,
   },
   {
     title: "Testnet Mode",
@@ -59,25 +58,33 @@ export default function SettingsDialog({
 }: SettingsDialogProps) {
   const toggleMode = async () => {
     if (mode === "mainnet") {
-      await saveMode("testnet");
+      localStorage.setItem("mode", "testnet");
       setMode("testnet");
       toast.success("Switched to Testnet", {
         description: "You are now on the development network.",
       });
     } else {
-      await saveMode("mainnet");
+      localStorage.setItem("mode", "mainnet");
       setMode("mainnet");
       toast.success("Switched to Mainnet", {
         description: "You are now on the main network.",
       });
     }
   };
+  const [timerIndex, setTimerIndex] = useState<number>(2);
 
   const changeTimer = () => {
-    setTimerIndex((prevIndex) => (prevIndex + 1) % timerOptions.length);
+    const newIndex = (timerIndex + 1) % timerOptions.length;
+    setTimerIndex(newIndex);
+    localStorage.setItem("timer", `${timerOptions[newIndex]}`);
   };
 
-  const [timerIndex, setTimerIndex] = useState<number>(2);
+  useEffect(() => {
+    const timer = parseInt(localStorage.getItem("timer") ?? "15");
+    const index = timerOptions.findIndex((t) => t === timer);
+    setTimerIndex(index);
+  }, []);
+
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>

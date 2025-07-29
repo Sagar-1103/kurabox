@@ -7,8 +7,8 @@ import { Activity, QrCode, Send } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { AccountTypes, Chain } from "utils/walletUtils";
 import useGetBalances from "hooks/get-balances";
-import { getSelectedAccountIndex } from "utils/storage";
 import SendDialog from "@/components/custom/send-dialog";
+import { getTime } from "hooks/get-time";
 
 export default function Wallet() {
   const [action, setAction] = useState<"wallets" | "activity">("wallets");
@@ -23,11 +23,14 @@ export default function Wallet() {
   );
   const [mode, setMode] = useState<"mainnet" | "testnet">("mainnet");
   useGetBalances(accounts, selectedAccountId, mode, setBalances, setMode);
+  getTime();
 
   const getDBIndex = async () => {
-    const selectedIndex = await getSelectedAccountIndex();
+    const selectedIndex = localStorage.getItem('accountIndex')
     if (!selectedIndex) return;
-    setSelectedAccountId(selectedIndex);
+    if (typeof selectedIndex === "string") { 
+      setSelectedAccountId(parseInt(selectedIndex));
+    }
   };
 
   useEffect(() => {

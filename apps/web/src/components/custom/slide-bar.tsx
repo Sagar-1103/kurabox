@@ -17,12 +17,8 @@ import {
   Settings,
 } from "lucide-react";
 import {
-  deleteAccounts,
-  deleteMode,
   deletePassword,
   deleteSeedPhrase,
-  deleteSelectedAccountIndex,
-  saveSelectedAccountIndex,
 } from "utils/storage";
 import { useRouter } from "next/navigation";
 import { AccountTypes, WalletUtils } from "utils/walletUtils";
@@ -104,7 +100,7 @@ export default function Slidebar({
                     <Avatar
                       onClick={async () => {
                         setSelectedAccountId(account.id + 1);
-                        await saveSelectedAccountIndex(account.id + 1);
+                        localStorage.setItem('accountIndex',`${account.id + 1}`);
                       }}
                       className={`rounded-lg hover:bg-[#c1f94c] hover:text-black ${selectedAccountId === account.id + 1 ? "bg-[#c1f94c] text-black" : "bg-gray-700 text-white"} w-10 h-10 my-1 m-auto cursor-pointer font-semibold `}
                     >
@@ -178,9 +174,7 @@ export default function Slidebar({
               onClick={async () => {
                 await deleteSeedPhrase();
                 await deletePassword();
-                await deleteAccounts();
-                await deleteSelectedAccountIndex();
-                await deleteMode();
+                localStorage.clear();
                 router.replace("/");
               }}
               className="text-white p-2 hover:bg-red-600 cursor-pointer rounded-md hover:text-white transition-all duration-200"

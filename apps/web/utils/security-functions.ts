@@ -1,4 +1,4 @@
-import { getPassword } from "./storage";
+import { getPassword, getSeedPhrase } from "./storage";
 
 export const passwordHashHex = async (password: string) => {
   if (typeof window === "undefined" || !window.crypto?.subtle ) return;

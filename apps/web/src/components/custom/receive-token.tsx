@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { Check, Copy, DownloadIcon, QrCode } from "lucide-react";
+import { Check, Copy, DownloadIcon, QrCode, Share2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { useQRCode } from "next-qrcode";
 import { Chain } from "utils/walletUtils";
@@ -29,7 +29,7 @@ export default function ReceiveToken({
   chain,
 }: ReceiveTokenProps) {
   const { SVG } = useQRCode();
-  const { DownloadCard, download } = useDownloadAddress(chain, publicAddress);
+  const { DownloadCard, download, handleShare } = useDownloadAddress(chain, publicAddress);
   const [copied, setCopied] = useState(false);
 
   return (
@@ -103,11 +103,11 @@ export default function ReceiveToken({
           loss.
         </div>
 
-        <div className="mt-5 flex flex-row gap-3">
+        <div className="mt-5 flex flex-row justify-center gap-3">
           <Button
             size={"lg"}
             variant={"outline"}
-            className="w-1/2 cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
+            className="w-[48%] cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
             onClick={() =>
               handleCopy(publicAddress, setCopied, {
                 title: "Address Copied",
@@ -131,10 +131,21 @@ export default function ReceiveToken({
             variant="outline"
             onClick={download}
             size={"lg"}
-            className="w-1/2 cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
+            className="w-[48%] cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
           >
             <DownloadIcon size={16} className="mr-2" />
             Download
+          </Button>
+        </div>
+        <div>
+          <Button
+            variant="outline"
+            onClick={handleShare}
+            size={"lg"}
+            className="w-full cursor-pointer text-white border-gray-600 hover:bg-[#c1f94c] hover:text-black"
+          >
+            <Share2 size={16} className="mr-2" />
+            Share
           </Button>
         </div>
         <div className="absolute -top-1000">

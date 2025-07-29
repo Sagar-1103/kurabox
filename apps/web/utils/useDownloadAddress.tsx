@@ -76,5 +76,25 @@ export default function useDownloadAddress(
     );
   };
 
-  return { DownloadCard, download };
+const handleShare = async () => {
+  if (!imageRef.current) return;
+
+  const dataUrl = await toPng(imageRef.current);
+
+  const response = await fetch(dataUrl);
+  const blob = await response.blob();
+  const file = new File([blob], "qrcode.png", { type: blob.type });
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({
+      files: [file],
+      title: `My ${chain} Wallet QR Code`,
+      text: "Here is my wallet address",
+    });
+  } else {
+    alert("Sharing is not supported on this browser/device.");
+  }
+};
+
+  return { DownloadCard, download,handleShare };
 }
