@@ -41,9 +41,9 @@ export default function ReceiveToken({
             <QrCode className="w-5 h-5 text-purple-400" />
             Receive {chain.slice(0, 1).toUpperCase() + chain.slice(1)}
           </DialogTitle>
-          <p className="text-sm text-muted-foreground text-gray-400 mt-1">
+          {/* <p className="text-sm text-muted-foreground text-gray-400 mt-1">
             Share this address to receive {chain}
-          </p>
+          </p> */}
         </DialogHeader>
 
         <div className="w-[220px] h-[220px] mx-auto border-2 border-dashed border-gray-700 rounded-md flex flex-col items-center justify-center ">
@@ -96,14 +96,14 @@ export default function ReceiveToken({
           </div>
         </div>
 
-        <div className="mt-4 bg-[#232217] text-yellow-300 text-xs border-yellow-600/70 border-1 p-3 rounded-lg leading-relaxed">
+        <div className="mt-1 bg-[#232217] text-yellow-300 text-xs sm:text-sm border-yellow-600/70 border-1 p-3 rounded-lg leading-relaxed">
           <span className="font-semibold">Important:</span> Only send{" "}
           {chain.slice(0, 3).toUpperCase()} to this address on the {chain}{" "}
           network. Sending tokens from other networks may result in permanent
           loss.
         </div>
 
-        <div className="mt-5 flex flex-col sm:flex-row justify-center gap-3">
+        <div className="mt-1 flex flex-col sm:flex-row justify-center gap-3">
           <Button
             size={"lg"}
             variant={"outline"}

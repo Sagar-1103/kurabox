@@ -5,6 +5,7 @@ import { Token } from "utils/walletUtils";
 import Image from "next/image";
 import { imagePaths } from "utils/image-paths";
 import { handleCopy } from "utils/copy";
+import SendToken from "./send-token";
 
 interface ChainCardProps {
   token: Token;
@@ -62,9 +63,11 @@ export default function ChainCard({ token,balance }: ChainCardProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
+        <SendToken chain={token.chain} balance={balance}>
         <button className="flex items-center justify-center gap-2 hover:bg-[#c1f94c] hover:text-black py-2 rounded-lg border border-gray-700 transition">
           <SendIcon className="w-4 h-4" /> Send
         </button>
+        </SendToken>
 
         <ReceiveToken chain={token.chain} publicAddress={token.publicKey}>
           <button className="flex items-center justify-center gap-2 hover:bg-[#c1f94c] hover:text-black py-2 rounded-lg border border-gray-700 transition">

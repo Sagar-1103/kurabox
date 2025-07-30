@@ -82,6 +82,8 @@ export default function SendDialog({
                 type="number"
                 className="flex-1 px-4 w-full py-2 bg-transparent text-white placeholder-gray-400 text-sm"
                 placeholder="0"
+                max={balances.find((b) => b.chain === selectedNetwork.chain)
+                  ?.balance ?? 0}
               />
               <span className="px-3 text-sm text-white">
                 {selectedNetwork.chain.slice(0, 3).toUpperCase()}
