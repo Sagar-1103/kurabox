@@ -15,6 +15,7 @@ import Image from "next/image";
 import { imagePaths } from "utils/image-paths";
 import { sendSolana } from "utils/send-sol";
 import { toast } from "sonner";
+import { sendEth } from "utils/send-ether";
 
 interface SendTokenProps {
   children: React.ReactNode;
@@ -43,10 +44,13 @@ export default function SendToken({
       try {
         if (chain === "solana") {
           transactionSignature = await sendSolana(publicAddress, quantity);
-          toast.success(`Sent ${quantity} ${chain.slice(0,3).toUpperCase()} to ${publicAddress.slice(0, 6)}...${publicAddress.slice(-4)}`,{
-            description:"Chnages may take time to reflect"
-          });
+        } else if (chain==="ethereum"){
+          transactionSignature = await sendEth(publicAddress,quantity);
         }
+
+        toast.success(`Sent ${quantity} ${chain.slice(0,3).toUpperCase()} to ${publicAddress.slice(0, 6)}...${publicAddress.slice(-4)}`,{
+          description:"Changes may take time to propagate"
+        });
       } catch (error) {
         toast.error("Some error occured.");
       }

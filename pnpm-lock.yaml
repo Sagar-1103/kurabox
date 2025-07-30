@@ -199,6 +199,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.11
         version: 4.1.11
+      alchemy-sdk:
+        specifier: ^3.6.2
+        version: 3.6.2(typescript@5.8.2)
       axios:
         specifier: ^1.11.0
         version: 1.11.0
@@ -6191,6 +6194,33 @@ packages:
       fast-uri: 3.0.6
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
+    dev: false
+
+  /alchemy-sdk@3.6.2(typescript@5.8.2):
+    resolution: {integrity: sha512-8mos4vf/jN5wY2MMU3pdaQxzFtAfNtnt/Noq53dtJE/woiRNfv5YEb3K8wyJl3gfNLpo/8YrJBzo7DPaqq2S7A==}
+    dependencies:
+      '@ethersproject/abi': 5.8.0
+      '@ethersproject/abstract-provider': 5.8.0
+      '@ethersproject/bignumber': 5.8.0
+      '@ethersproject/bytes': 5.8.0
+      '@ethersproject/contracts': 5.8.0
+      '@ethersproject/hash': 5.8.0
+      '@ethersproject/networks': 5.8.0
+      '@ethersproject/providers': 5.8.0
+      '@ethersproject/units': 5.8.0
+      '@ethersproject/wallet': 5.8.0
+      '@ethersproject/web': 5.8.0
+      '@solana/web3.js': 1.98.2(typescript@5.8.2)
+      axios: 1.11.0
+      sturdy-websocket: 0.2.1
+      websocket: 1.0.35
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - encoding
+      - supports-color
+      - typescript
+      - utf-8-validate
     dev: false
 
   /alchemy-sdk@3.6.2(typescript@5.8.3):
