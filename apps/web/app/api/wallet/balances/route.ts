@@ -51,7 +51,7 @@ export async function POST(req: Request){
             });
             const resp = await response.data;
             const result = {chain:token.chain,balance:network.calculate(resp)};
-            await redis.setex(cacheKey, 120, JSON.stringify(result));
+            await redis.setex(cacheKey, 60, JSON.stringify(result));
             return result;
         })
     )
