@@ -55,6 +55,7 @@ export default function SetPassword({ setAction }: SetPasswordProps) {
         disabled={password.length < 6 || password !== confirmPassword}
         onClick={async() => {
           await savePassword(password);
+          localStorage.setItem('isPassword',"true");
           setAction("new");
           toast.success("Password has been set successfully", {
             description: "Your password is now active for your wallet.",

@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { ChevronLeft, Send } from "lucide-react";
-import { Chain, Token } from "utils/walletUtils";
+import { Chain, tok, Token } from "utils/walletUtils";
 import Image from "next/image";
 import { imagePaths } from "utils/image-paths";
 import SendTemp from "./send-temp";
@@ -94,7 +94,7 @@ export default function SendDialog({
                 </div>
                 <p className="group-hover:text-white text-md text-gray-400">
                   {balances[index]?.balance ?? 0}{" "}
-                  {network.chain.slice(0, 3).toUpperCase()}
+                  {tok[`${network.chain}`]}
                 </p>
               </button>
             ))}

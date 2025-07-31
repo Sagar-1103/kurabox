@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { Check, Copy, DownloadIcon, QrCode, Share2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { useQRCode } from "next-qrcode";
-import { Chain } from "utils/walletUtils";
+import { Chain, tok } from "utils/walletUtils";
 import useDownloadAddress from "utils/useDownloadAddress";
 import Image from "next/image";
 import { imagePaths } from "utils/image-paths";
@@ -98,7 +98,7 @@ export default function ReceiveToken({
 
         <div className="mt-1 bg-[#232217] text-yellow-300 text-xs sm:text-sm border-yellow-600/70 border-1 p-3 rounded-lg leading-relaxed">
           <span className="font-semibold">Important:</span> Only send{" "}
-          {chain.slice(0, 3).toUpperCase()} to this address on the {chain}{" "}
+          {tok[`${chain}`]} to this address on the {chain}{" "}
           network. Sending tokens from other networks may result in permanent
           loss.
         </div>

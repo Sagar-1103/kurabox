@@ -21,6 +21,8 @@ interface ResetPinProps {
 export default function ResetPin({ children }: ResetPinProps) {
   const [currentPin, setCurrentPin] = useState("");
   const [newPin, setNewPin] = useState("");
+  const [open, setOpen] = useState(false);
+  
   const handleReset = async() => {
     if (!currentPin || !newPin) {
       toast.error("Please fill in both fields.");
@@ -37,11 +39,12 @@ export default function ResetPin({ children }: ResetPinProps) {
     toast.success("Pin reset successfully!");
     setCurrentPin("");
     setNewPin("");
+    setOpen(false);
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen} >
+      <DialogTrigger onClick={() => setOpen(true)} asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[420px] px-6 py-5 rounded-xl bg-[#0a0e14] text-white border border-gray-700">
         <DialogHeader>
           <DialogTitle className="flex gap-x-2 items-start">

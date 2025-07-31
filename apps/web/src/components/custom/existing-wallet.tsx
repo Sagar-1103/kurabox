@@ -107,6 +107,7 @@ export default function ExistingWallet() {
         onClick={async() => {
           const seedPhrase = seedWords.join(" ");
           await saveSeedPhrase(seedPhrase);
+          localStorage.setItem('isSeed',"true");
           router.replace("/wallet");
           toast.success("Wallet created successfully", {
             description: "Your multi-chain wallet is ready to use.",

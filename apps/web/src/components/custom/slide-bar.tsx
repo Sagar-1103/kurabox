@@ -16,10 +16,7 @@ import {
   Plus,
   Settings,
 } from "lucide-react";
-import {
-  deletePassword,
-  deleteSeedPhrase,
-} from "utils/storage";
+import { deletePassword, deleteSeedPhrase } from "utils/storage";
 import { useRouter } from "next/navigation";
 import { AccountTypes, WalletUtils } from "utils/walletUtils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -100,7 +97,10 @@ export default function Slidebar({
                     <Avatar
                       onClick={async () => {
                         setSelectedAccountId(account.id + 1);
-                        localStorage.setItem('accountIndex',`${account.id + 1}`);
+                        localStorage.setItem(
+                          "accountIndex",
+                          `${account.id + 1}`
+                        );
                       }}
                       className={`rounded-lg hover:bg-[#c1f94c] hover:text-black ${selectedAccountId === account.id + 1 ? "bg-[#c1f94c] text-black" : "bg-gray-700 text-white"} w-10 h-10 my-1 m-auto cursor-pointer font-semibold `}
                     >
@@ -114,16 +114,39 @@ export default function Slidebar({
                           key={token.chain}
                           className="flex flex-row justify-between gap-1 border-b border-white/10 pb-2 last:border-none last:pb-0"
                         >
-                          <p className="text-gray-400">
-                            {token.chain.charAt(0).toUpperCase() +
-                              token.chain.slice(1)}
-                          </p>
+                          {mode === "mainnet" && <p className="text-gray-400">
+                            {token.chain.charAt(0).toUpperCase() + token.chain.slice(1)}
+                          </p>}
+                          { mode!=="mainnet" && <p className="text-gray-400">
+                            {token.chain==="solana"?"Devnet":token.chain==="ethereum"?"Sepolia":"Amoy"}
+                          </p>}
                           <div className="flex">
                             <p className="text-white truncate">
                               {token.publicKey.slice(0, 6)}...
                               {token.publicKey.slice(-4)}
                             </p>
-                            {copiedChain !== token.chain ? (
+                            {copied && copiedChain == token.chain ? (
+                              <Check
+                                className="text-green-400 mx-2"
+                                size={15}
+                              />
+                            ) : (
+                              <Copy
+                                onClick={() => {
+                                  setCopiedChain(token.chain);
+                                  handleCopy(token.publicKey, setCopied, {
+                                    title: "Address Copied",
+                                    description:
+                                      token.chain.charAt(0).toUpperCase() +
+                                      token.chain.slice(1) +
+                                      " public address copied to clipboard.",
+                                  });
+                                }}
+                                size={15}
+                                className="mx-2"
+                              />
+                            )}
+                            {/* {copiedChain !== token.chain ? (
                               <Copy
                                 onClick={() => {
                                   setCopiedChain(token.chain);
@@ -143,7 +166,7 @@ export default function Slidebar({
                                 className="text-green-400 mx-2"
                                 size={15}
                               />
-                            )}
+                            )} */}
                           </div>
                         </div>
                       ))}

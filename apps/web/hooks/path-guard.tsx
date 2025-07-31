@@ -14,9 +14,9 @@ export function PathGuard() {
     if (lastClosedAt) {
       const lastTime = parseInt(lastClosedAt, 10);
       const now = Date.now();
-      const diffInMinutes = (now - lastTime) / 60000; 
+      const diffInMinutes = (now - lastTime) / 60000;
       if (diffInMinutes > timer) {
-        localStorage.setItem('locked',"true");
+        localStorage.setItem("locked", "true");
       }
     }
   }, []);
@@ -24,28 +24,32 @@ export function PathGuard() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     async function checkAccess() {
-      const password = await getPassword();
-      const seedPhrase = await isSeedStored();
-      const locked = localStorage.getItem('locked');
+      const locked = localStorage.getItem("locked");
+      const isPassword = localStorage.getItem("isPassword");
+      const isSeed = localStorage.getItem("isSeed");
 
-      if (!seedPhrase) {
-        const allowedPaths = ["/", "/onboard", "/onboard/done"];
-        if (!allowedPaths.includes(pathname)) {
-          router.replace("/");
-        }
-        return;
-      }
 
-      if (seedPhrase && password && locked==="true") {
+      if (locked === "true") {
         if (pathname !== "/password") {
           router.replace("/password");
         }
         return;
       }
 
-      if (seedPhrase && password ) {
+      // const password = await getPassword();
+      // const seedPhrase = await isSeedStored();
+
+      if (isSeed && isPassword) {
         if (pathname !== "/wallet") {
           router.replace("/wallet");
+        }
+        return;
+      }
+
+      if (!isSeed) {
+        const allowedPaths = ["/", "/onboard", "/onboard/done"];
+        if (!allowedPaths.includes(pathname)) {
+          router.replace("/");
         }
         return;
       }

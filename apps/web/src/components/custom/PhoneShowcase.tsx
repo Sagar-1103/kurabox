@@ -3,23 +3,21 @@ import Image from "next/image";
 
 export default function PhoneShowcase() {
   return (
-    <div className="w-full sm:w-[70%] justify-self-center px-10 py-10 flex flex-col md:flex-row items-center min-h-screen justify-center gap-16 text-white">
-      <div className="relative w-full max-w-xs md:max-w-sm lg:max-w-md aspect-[9/19]">
-        <Image src="/iphone.svg" alt="Phone Mockup" fill />
+    <div className="w-full px-4 sm:px-10 py-10 flex flex-col md:flex-row items-center justify-center gap-12 sm:gap-16 min-h-screen text-white">
+      <div className="relative w-4/5 sm:w-3/5 md:w-full max-w-[350px] aspect-[9/19]">
+        <Image src="/iphone-qr.svg" alt="Phone Mockup" fill className="object-contain" />
       </div>
 
-      <div className="max-w-xl space-y-6 md:text-start text-center">
-        <h2 className="sm:text-6xl text-4xl font-semibold  leading-tight">
-          Your Wallet. <span className="text-[#c1f94c]">Always With You.</span>
+      <div className="max-w-xl text-center md:text-start space-y-6 px-3 md:px-1">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight">
+          Share or receive crypto effortlessly with{" "}
+          <span className="text-[#c1f94c]">QR codes.</span>
         </h2>
         <p className="text-gray-300 sm:text-lg">
-          Wherever life takes you, commuting, working or unwinding. KuraBox is your
-          trusted companion, ensuring your crypto assets are safe, accessible
-          and ready whenever you need them. Designed with simplicity and
-          reliability in mind, KuraBox brings peace of mind, putting the power of
-          digital finance right in the palm of your hand. Experience effortless
-          management, seamless access, and the confidence that comes with true
-          security, all wrapped into one elegant, intuitive app.
+          Share or receive crypto effortlessly using your unique wallet QR code.
+          Whether you're sending funds to a friend or accessing your address
+          from another device, simply scan or share your QR code securely. No
+          copying, no errors, just seamless transactions every time.
         </p>
       </div>
     </div>

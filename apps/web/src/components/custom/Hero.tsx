@@ -1,7 +1,7 @@
 import React from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { Download, Laptop2 } from "lucide-react";
+import { Laptop2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -20,11 +20,10 @@ export default function Hero() {
           Secure Crypto Wallet
         </p>
       </div>
-      <p className="w-[90%] md:w-[50%] text-md sm:text-lg text-gray-300">
-        Store, send and secure your crypto assets effortlessly with Kura.
-        Experience strong encryption, fast transactions and easy access to DeFi
-        all within a simple and intuitive wallet designed to be your trusted
-        digital storehouse.
+      <p className="w-[90%] md:w-[40%] text-md sm:text-lg text-gray-300">
+        Kurabox lets you store, send, and manage your crypto easily. With
+        built-in HD wallet support, fast transfers, and a clean interface, it’s
+        your secure digital vault.
       </p>
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-y-0 gap-x-6">
         <Button className="bg-[#b8ff4c] p-6 text-lg font text-black cursor-pointer hover:scale-105">
@@ -32,7 +31,7 @@ export default function Hero() {
             <Laptop2 className="my-auto" /> Use Web Wallet
           </Link>
         </Button>
-        <Button
+        {/* <Button
           className="hover:bg-[#b8ff4c]/20 p-6 text-lg text-white cursor-pointer hover:scale-105"
           variant={"outline"}
         >
@@ -40,15 +39,15 @@ export default function Hero() {
             <Download className="my-auto" />
             Download App
           </p>
-        </Button>
+        </Button> */}
       </div>
 
-      <div className="sm:-mt-10 mx-3">
+      <div className="mx-3">
         <Image
-          src={"/mac.svg"}
+          src={"/mac-wallet.svg"}
           alt="Laptop Mockup"
-          width={300}
-          height={300}
+          width={280}
+          height={280}
           className="max-w-7xl w-full h-auto rounded-xl shadow-lg"
         />
       </div>

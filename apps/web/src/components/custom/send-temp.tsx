@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 import { imagePaths } from "utils/image-paths";
-import { Chain } from "utils/walletUtils";
+import { Chain, tok } from "utils/walletUtils";
 import { Button } from "../ui/button";
 import { sendSolana } from "utils/send-sol";
 import { sendEth } from "utils/send-ether";
@@ -9,6 +9,8 @@ import { sendPol } from "utils/send-polygon";
 import { toast } from "sonner";
 import QrScanner from "qr-scanner";
 import { Input } from "../ui/input";
+import { checkIsPasswordValid } from "utils/security-functions";
+import { getSeedPhrase } from "utils/storage";
 
 interface SendTempProps {
   chain: Chain;
@@ -21,6 +23,21 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
   const [quantity, setQuantity] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [sendPermission, setSendPermission] = useState(false);
+  const [pin, setPin] = useState("");
+
+  const handleCheckPin = async () => {
+    const isPinCorrect = await checkIsPasswordValid(pin);
+    if (isPinCorrect) {
+      const recoveryPhrase = await getSeedPhrase();
+      if (recoveryPhrase) {
+        setSendPermission(true);
+        setPin("");
+      }
+    } else {
+      toast.error("Incorrect pin.");
+    }
+  };
 
   const handleQrUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -60,11 +77,23 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
         new Promise(async (resolve, reject) => {
           try {
             if (chain === "solana") {
-              transactionSignature = await sendSolana(publicAddress, quantity, setOpen);
+              transactionSignature = await sendSolana(
+                publicAddress,
+                quantity,
+                setOpen
+              );
             } else if (chain === "ethereum") {
-              transactionSignature = await sendEth(publicAddress, quantity, setOpen);
+              transactionSignature = await sendEth(
+                publicAddress,
+                quantity,
+                setOpen
+              );
             } else if (chain === "polygon") {
-              transactionSignature = await sendPol(publicAddress, quantity, setOpen);
+              transactionSignature = await sendPol(
+                publicAddress,
+                quantity,
+                setOpen
+              );
             }
             setIsLoading(false);
             resolve({});
@@ -77,13 +106,34 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
 
       toast.promise(promise, {
         loading: "Transaction is being processed...",
-        success: `Sent ${quantity} ${chain.slice(0, 3).toUpperCase()} to ${publicAddress.slice(0, 6)}...${publicAddress.slice(-4)}`,
+        success: `Sent ${quantity} ${tok[`${chain}`]} to ${publicAddress.slice(0, 6)}...${publicAddress.slice(-4)}`,
         error: "Something went wrong. Please try again.",
       });
     } catch (error) {
       console.log(`Error sending ${chain}`);
     }
   };
+
+  if (!sendPermission) {
+    return (
+      <div className="mt-4 space-y-4">
+        <Input
+          type="password"
+          placeholder="Enter your PIN"
+          value={pin}
+          onChange={(e) => setPin(e.target.value)}
+          className="bg-[#14191f] border border-gray-700 text-white"
+        />
+        <Button
+          onClick={handleCheckPin}
+          disabled={pin.length < 6}
+          className="bg-[#c1f94c] text-black font-semibold text-sm py-2 px-4 rounded-md w-full"
+        >
+          Show Phrase
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-4 flex flex-col gap-5">
@@ -98,7 +148,9 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm text-gray-400">Scan QR code or enter manually</label>
+        <label className="text-sm text-gray-400">
+          Scan QR code or enter manually
+        </label>
 
         <Input
           id="qr-upload"
@@ -139,7 +191,7 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
               }
             }}
           />
-          <span className="px-3 text-sm text-white">{chain.slice(0, 3).toUpperCase()}</span>
+          <span className="px-3 text-sm text-white">{tok[`${chain}`]}</span>
           <button
             className="px-3 py-2 text-xs font-medium bg-[#c1f94c] text-black rounded-l-none rounded-md"
             onClick={() => setQuantity(balance)}
@@ -148,13 +200,15 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
           </button>
         </div>
         <div className="text-xs text-gray-400 flex justify-end mt-1">
-          Available {balance ?? 0} {chain.slice(0, 3).toUpperCase()}
+          Available {balance ?? 0} {tok[`${chain}`]}
         </div>
       </div>
 
       <Button
         onClick={sendToken}
-        disabled={!quantity || !publicAddress || quantity > balance || isLoading}
+        disabled={
+          !quantity || !publicAddress || quantity > balance || isLoading
+        }
         className="mt-2 w-full bg-[#c1f94c] text-black text-sm font-semibold py-2 px-4 rounded-md"
       >
         Send

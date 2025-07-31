@@ -1,7 +1,7 @@
 import { Check, CopyIcon, DownloadIcon, SendIcon } from "lucide-react";
 import React, { useState } from "react";
 import ReceiveToken from "./receive-token";
-import { Token } from "utils/walletUtils";
+import { tok, Token } from "utils/walletUtils";
 import Image from "next/image";
 import { imagePaths } from "utils/image-paths";
 import { handleCopy } from "utils/copy";
@@ -30,7 +30,7 @@ export default function ChainCard({ token,balance }: ChainCardProps) {
           </div>
         </div>
         <span className="text-sm bg-[#1f1f1f] px-3 py-1 rounded-full">
-          {token?.chain.slice(0, 3).toUpperCase()}
+          {tok[`${token.chain}`]}
         </span>
       </div>
 
@@ -38,7 +38,7 @@ export default function ChainCard({ token,balance }: ChainCardProps) {
         <div className="flex justify-between text-gray-400 text-sm">
           <span>Balance</span>
           <span className="text-white font-medium">
-            {balance} {token?.chain.slice(0, 3).toUpperCase()}
+            {balance} {tok[`${token.chain}`]}
           </span>
         </div>
       </div>

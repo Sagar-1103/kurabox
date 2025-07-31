@@ -7,6 +7,12 @@ import {ethers, HDNodeWallet} from "ethers";
 
 export type Chain = "solana" | "polygon" | "ethereum";
 
+export const tok = {
+  solana:"SOL",
+  ethereum:"ETH",
+  polygon:"MATIC"
+}
+
 export interface Token {
   publicKey:string;
   chain:Chain;
@@ -56,7 +62,10 @@ export class WalletUtils {
 
   static async getAccounts() {
     if (typeof window === "undefined") return;
-    if (!this.seedPhrase) return;
+    if (!this.seedPhrase) {
+      console.log("Seed phrase not set");
+      return;
+    }
     if (this.accounts.length === 0) {
       const stringifiedAccounts = localStorage.getItem('accounts');
       if (stringifiedAccounts) {
@@ -65,8 +74,8 @@ export class WalletUtils {
         await this.addAccount(0);
         localStorage.setItem('accountIndex',"1");
       }
-      return this.accounts;
     }
+    return this.accounts;
   }
 
   static async addAccount(index: number) {

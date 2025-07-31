@@ -94,6 +94,7 @@ export default function Done() {
         disabled={!acknowledged}
         onClick={async() => {
           await saveSeedPhrase(secretPhrase);
+          localStorage.setItem('isSeed',"true");
           router.replace("/wallet");
           toast.success("Wallet created successfully", {
             description: "Your multi-chain wallet is ready to use.",

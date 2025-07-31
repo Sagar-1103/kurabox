@@ -26,9 +26,9 @@ export default function Wallet() {
   getTime();
 
   const getDBIndex = async () => {
-    const selectedIndex = localStorage.getItem('accountIndex')
+    const selectedIndex = localStorage.getItem("accountIndex");
     if (!selectedIndex) return;
-    if (typeof selectedIndex === "string") { 
+    if (typeof selectedIndex === "string") {
       setSelectedAccountId(parseInt(selectedIndex));
     }
   };
@@ -40,9 +40,17 @@ export default function Wallet() {
   return (
     <div>
       <div className="flex justify-between">
-        <p className="text-3xl bg-gradient-to-r from-[#c1f94c] to-[#fcd44c] bg-clip-text text-transparent font-bold">
-          KuraBox
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-3xl bg-gradient-to-r from-[#c1f94c] to-[#fcd44c] bg-clip-text text-transparent font-bold">
+            KuraBox
+          </p>
+
+          {mode === "testnet" && (
+            <span className="text-xs px-2 py-0.5 bg-yellow-400 text-black rounded-md font-medium">
+              Testnet
+            </span>
+          )}
+        </div>
         <Slidebar
           accounts={accounts}
           setAccounts={setAccounts}
@@ -60,7 +68,10 @@ export default function Wallet() {
             <p>Receive</p>
           </div>
         </Receive>
-        <SendDialog balances={balances} networks={accounts[selectedAccountId - 1]?.tokens ?? []} >
+        <SendDialog
+          balances={balances}
+          networks={accounts[selectedAccountId - 1]?.tokens ?? []}
+        >
           <div className="flex flex-col w-32 h-32 items-center cursor-pointer gap-y-2 hover:bg-[#c1f94c] hover:text-black font-semibold border-gray-800 border-1 hover:border-0 justify-center rounded-md">
             <Send size={40} />
             <p>Send</p>
