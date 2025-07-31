@@ -93,7 +93,7 @@ export default function Done() {
       <Button
         disabled={!acknowledged}
         onClick={async() => {
-          await saveSeedPhrase(secretPhrase);
+          await saveSeedPhrase(secretPhrase.trim());
           localStorage.setItem('isSeed',"true");
           router.replace("/wallet");
           toast.success("Wallet created successfully", {

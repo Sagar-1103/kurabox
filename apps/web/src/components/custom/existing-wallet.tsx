@@ -106,7 +106,7 @@ export default function ExistingWallet() {
         disabled={seedWords.slice(0, wordCount).some((w) => !w)}
         onClick={async() => {
           const seedPhrase = seedWords.join(" ");
-          await saveSeedPhrase(seedPhrase);
+          await saveSeedPhrase(seedPhrase.trim());
           localStorage.setItem('isSeed',"true");
           router.replace("/wallet");
           toast.success("Wallet created successfully", {

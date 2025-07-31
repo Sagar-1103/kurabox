@@ -35,7 +35,7 @@ export default function SecretPhrase({
     if(isPinCorrect) {
       const recoveryPhrase = await getSeedPhrase();
       if (recoveryPhrase) {
-        setPhrase(recoveryPhrase);
+        setPhrase(recoveryPhrase.trim());
         setShowPhrase(true);
         setPin("");
       }

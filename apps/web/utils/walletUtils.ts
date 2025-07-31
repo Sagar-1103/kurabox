@@ -30,14 +30,18 @@ export class WalletUtils {
   static async init() {
     if (typeof window === "undefined") return;
     const phrase = await getSeedPhrase();
+    this.seedPhrase = phrase;
     this.seedPhrase = phrase?.trim().toLowerCase().replace(/\s+/g, " ") || null;
   }
 
   static async createAccount(accountIndex: number) {
     if (!this.seedPhrase) return;
-    const seed = await mnemonicToSeed(this.seedPhrase);
+    const seed = await mnemonicToSeed(this.seedPhrase.trim());
+    
     const solKeypair = this.createSolWallet(accountIndex,seed);
     const ethKeypair = this.createEthWallet(accountIndex,seed);
+    console.log(solKeypair.publicKey);
+    
     accountIndex++;
     return {solKeypair,ethKeypair};
   }
