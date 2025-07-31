@@ -11,6 +11,7 @@ import QrScanner from "qr-scanner";
 import { Input } from "../ui/input";
 import { checkIsPasswordValid } from "utils/security-functions";
 import { getSeedPhrase } from "utils/storage";
+import Scanner from "./Scanner";
 
 interface SendTempProps {
   chain: Chain;
@@ -24,6 +25,7 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [sendPermission, setSendPermission] = useState(false);
+  const [showScanner,setShowScanner] = useState(false);
   const [pin, setPin] = useState("");
 
   const handleCheckPin = async () => {
@@ -129,7 +131,7 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
           disabled={pin.length < 6}
           className="bg-[#c1f94c] text-black font-semibold text-sm py-2 px-4 rounded-md w-full"
         >
-          Show Phrase
+          Continue
         </Button>
       </div>
     );
@@ -152,15 +154,20 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
           Scan QR code or enter manually
         </label>
 
-        <Input
-          id="qr-upload"
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          onChange={handleQrUpload}
-          className="text-sm cursor-pointer"
-        />
-
+        <div className="flex space-x-1">
+          <Input
+            id="qr-upload"
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleQrUpload}
+            className="text-sm cursor-pointer"
+          />
+          <Button onClick={()=>setShowScanner(true)} className="bg-[#c1f94c] cursor-pointer text-black">Scan</Button>
+        </div>
+        {
+          showScanner && <Scanner setPublicAddress={setPublicAddress} setShowScanner={setShowScanner} />
+        }
         <input
           type="text"
           placeholder={`Recipient's ${chain} address`}
@@ -193,7 +200,7 @@ export default function SendTemp({ chain, balance, setOpen }: SendTempProps) {
           />
           <span className="px-3 text-sm text-white">{tok[`${chain}`]}</span>
           <button
-            className="px-3 py-2 text-xs font-medium bg-[#c1f94c] text-black rounded-l-none rounded-md"
+            className="px-3 py-2 text-xs font-medium cursor-pointer bg-[#c1f94c] text-black rounded-l-none rounded-md"
             onClick={() => setQuantity(balance)}
           >
             Max
