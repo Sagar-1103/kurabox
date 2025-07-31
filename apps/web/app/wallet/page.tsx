@@ -69,7 +69,7 @@ export default function Wallet() {
       </div>
 
       <div className="bg-[#151c29] flex flex-row rounded-xl p-1.5 mt-10 mb-6">
-        <div className="w-1/2">
+        <div className="w-full">
           <Button
             onClick={() => setAction("wallets")}
             className={`w-full ${action === "wallets" && "bg-[#c1f94c] text-black"} `}
@@ -77,14 +77,14 @@ export default function Wallet() {
             Wallets
           </Button>
         </div>
-        <div className="w-1/2">
+        {/* <div className="w-1/2">
           <Button
             onClick={() => setAction("activity")}
             className={`w-full ${action === "activity" && "bg-[#c1f94c] text-black"} `}
           >
             Activity
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {action === "wallets" ? (

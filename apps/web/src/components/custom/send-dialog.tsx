@@ -10,9 +10,9 @@ import {
 } from "../ui/dialog";
 import { ChevronLeft, Send } from "lucide-react";
 import { Chain, Token } from "utils/walletUtils";
-import { Button } from "../ui/button";
 import Image from "next/image";
 import { imagePaths } from "utils/image-paths";
+import SendTemp from "./send-temp";
 
 interface SendDialogProps {
   children: React.ReactNode;
@@ -26,9 +26,10 @@ export default function SendDialog({
   balances,
 }: SendDialogProps) {
   const [selectedNetwork, setSelectedNetwork] = useState<Token | null>(null);
+  const [open, setOpen] = useState(false);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
 
       <DialogContent className="sm:max-w-[420px] px-6 py-5 rounded-xl bg-[#0a0e14] text-white border border-gray-700">
@@ -60,53 +61,7 @@ export default function SendDialog({
         </DialogHeader>
 
         {selectedNetwork ? (
-          <div className="mt-4 flex flex-col gap-4">
-            <div className="flex justify-center w-full">
-              <Image
-                src={imagePaths[`${selectedNetwork.chain}`]}
-                width={20}
-                height={20}
-                alt={selectedNetwork.chain}
-                className="w-20 h-20 text-white rounded-full"
-              />
-            </div>
-
-            <input
-              type="text"
-              placeholder={`Recipient's ${selectedNetwork.chain} address`}
-              className="mt-4 bg-[#14191f] text-sm text-white placeholder-gray-400 border border-gray-700 rounded-md px-4 py-2 w-full"
-            />
-
-            <div className="flex items-center mt-2 border border-gray-700 bg-[#14191f] rounded-md overflow-hidden">
-              <input
-                type="number"
-                className="flex-1 px-4 w-full py-2 bg-transparent text-white placeholder-gray-400 text-sm"
-                placeholder="0"
-                max={balances.find((b) => b.chain === selectedNetwork.chain)
-                  ?.balance ?? 0}
-              />
-              <span className="px-3 text-sm text-white">
-                {selectedNetwork.chain.slice(0, 3).toUpperCase()}
-              </span>
-              <button className="px-3 py-2 text-xs font-medium bg-[#c1f94c] text-black rounded-l-none rounded-md">
-                Max
-              </button>
-            </div>
-
-            <div className="text-xs text-gray-400 flex justify-end mt-1">
-              <span>
-                Available{" "}
-                {balances.find((b) => b.chain === selectedNetwork.chain)
-                  ?.balance ?? 0}{" "}
-                {selectedNetwork.chain.slice(0, 3).toUpperCase()}
-              </span>
-            </div>
-            <div className="mx-auto w-full">
-              <Button className="mt-3 w-full bg-[#c1f94c] text-black text-sm font-semibold py-2 px-4 rounded-md cursor-pointer">
-                Send
-              </Button>
-            </div>
-          </div>
+          <SendTemp chain={selectedNetwork.chain} balance={balances.find((b) => b.chain === selectedNetwork.chain)?.balance ?? 0} setOpen={setOpen}/>
         ) : (
           <div className="mt-4 flex flex-col gap-4">
             {networks.map((network, index) => (

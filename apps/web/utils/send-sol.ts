@@ -18,7 +18,7 @@ import {
 } from "@solana/kit";
 import { getTransferSolInstruction } from "@solana-program/system";
 
-export const sendSolana = async (recipientBase58Address:string,quantity:number) => {
+export const sendSolana = async (recipientBase58Address:string,quantity:number,setOpen:(val:boolean)=>void) => {
   const mnemonic = await getSeedPhrase();
   if (!mnemonic) return;
   
@@ -66,5 +66,6 @@ export const sendSolana = async (recipientBase58Address:string,quantity:number) 
   );
 
   const transactionSignature = getSignatureFromTransaction(signedTransaction);
+  setOpen(false);
   return transactionSignature;
 };
