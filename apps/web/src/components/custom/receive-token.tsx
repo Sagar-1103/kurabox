@@ -73,8 +73,8 @@ export default function ReceiveToken({
                 <Image
                   src={imagePaths[`${chain}`]}
                   alt={`${chain}-logo`}
-                  width={50}
-                  height={50}
+                  width={45}
+                  height={45}
                   className="rounded-full"
                 />
               </div>
