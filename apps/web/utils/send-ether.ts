@@ -50,7 +50,7 @@ export const sendEth = async (recipientAddress: string, quantity: number,setOpen
   let transaction = {
     to: recipientAddress,
     value: ethers.parseEther(`${quantity}`),
-    gasLimit: "21000",
+    gasLimit: 21000,
     maxPriorityFeePerGas: ethers.parseUnits("5", "gwei"),
     maxFeePerGas: ethers.parseUnits("20", "gwei"),
     nonce: nonce,
