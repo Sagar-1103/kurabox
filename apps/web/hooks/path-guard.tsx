@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { getPassword, isSeedStored } from "utils/storage";
 
 export function PathGuard() {
   const router = useRouter();

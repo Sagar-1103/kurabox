@@ -30,7 +30,7 @@ export default function useGetBalances(
 
   const getBalances = async () => {
     try {
-      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/wallet/balances`;
+      const url = `/api/wallet/balances`;
 
       const tokens = accounts[selectedAccountId - 1]?.tokens;
       if (!tokens) return;
