@@ -3,7 +3,7 @@ import Footer from "@/components/custom/Footer";
 import Header from "@/components/custom/Header";
 import Hero from "@/components/custom/Hero";
 import PhoneShowcase from "@/components/custom/PhoneShowcase";
-import Trial from "@/components/custom/Trial";
+// import Trial from "@/components/custom/Trial";
 import React from "react";
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
       <Hero/>
       <Features/>
       <PhoneShowcase/>
-      <Trial/>
+      {/* <Trial/> */}
       <Footer/>
     </>
   );
