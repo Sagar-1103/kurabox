@@ -1,135 +1,79 @@
-# Turborepo starter
+# 🚀 Kurabox
 
-This Turborepo starter is maintained by the Turborepo core team.
+Kurabox is a **secure, web-based HD crypto wallet**  
+with **multi-chain support** for **Solana**, **Ethereum** and **Polygon**.
 
-## Using this example
+🌐 **Live Site:** [https://kurabox-web.vercel.app/](https://kurabox-web.vercel.app/)
 
-Run the following command:
+<img width="1322" height="863" alt="kurabox-2" src="https://github.com/user-attachments/assets/d25f3a67-1907-4bd7-b454-506ff655953e" />
 
-```sh
-npx create-turbo@latest
+<img width="1319" height="864" alt="kurabox-3" src="https://github.com/user-attachments/assets/00822be0-097d-4da5-ac2f-2028d3a6da24" />
+
+<img width="1147" height="826" alt="kurabox-5" src="https://github.com/user-attachments/assets/ba51b616-40b2-433f-9819-550b59fc9038" />
+
+## ⭐ Features
+
+- 🔐 **Secure HD Wallet Architecture**  
+  Your keys are generated and stored securely on-device using BIP-39 and ed25519 standards. They never leave your device.
+
+- 🌐 **Multi-Chain Support**  
+  Effortlessly manage assets across Solana, Ethereum and Polygon, all in one wallet.
+
+- 📱 **QR Code-Based Address Sharing**  
+  Send or receive crypto easily using scannable QR codes, no manual copying or pasting required.
+
+- ♻️ **Mnemonic Backup & Recovery**  
+  Regain access to your wallet using your 12/24 word seed phrase, simple and secure recovery.
+
+- ⚡ **Alchemy Powered Data**  
+  Integrated with Alchemy SDK for fast and reliable blockchain data access.
+
+- 💎 **Clean & Responsive UI**  
+  Built using TailwindCSS and Radix UI for a fast, accessible and modern user experience.
+
+<img width="1290" height="810" alt="kurabox-4" src="https://github.com/user-attachments/assets/d7caf960-d3c9-460b-a57e-b90e9bdabf4a" />
+
+https://github.com/user-attachments/assets/3dfe3e9a-b719-4d5a-b916-712ac7646314
+
+## 🛠 Tech Stack
+-  Next.js
+-  TypeScript
+-  Tailwind CSS
+-  Shadcn
+-  Axios
+-  Alchemy SDK
+-  Redis
+-  Upstash
+-  Turborepo
+-  @solana/web3.js
+-  ethers.js
+
+## 🚀 Getting Started
+
+Follow these steps to run Kurabox locally:
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Sagar-1103/kurabox.git
+cd kurabox
 ```
 
-## What's inside?
+### 2. Install Dependencies
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+pnpm install
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+### 3. Set Up Environment Variables
+Create a .env file in the apps/web directory with the following:
+```bash
+NEXT_PUBLIC_API_KEY=your_alchemy_api_key_here
+NEXT_PUBLIC_REDIS_URL=your_redis_url_here
+NEXT_PUBLIC_REDIS_TOKEN=your_redis_token_here
 ```
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
+### 4. Run the Development Server
+```bash
+pnpm run dev
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
